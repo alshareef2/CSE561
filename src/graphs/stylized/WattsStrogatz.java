@@ -33,7 +33,6 @@ public class WattsStrogatz implements StylizedGraph{
 				//if there is a friendship and we should rewire, do so. 
 				if(m.get(i, j) > 0.0){
 					if(Math.random() <= pRewire){
-						System.out.println(i + ", " + j);
 						//select a new node
 						int newIdx, attempt = 0;
 						do{
@@ -41,7 +40,6 @@ public class WattsStrogatz implements StylizedGraph{
 						}while(attempt++ < 10 && (newIdx == i || m.get(i, newIdx) > 0));
 						
 						if(attempt < 10){
-							System.out.println("Rewiring (" + i + ", " + j + ") to " + newIdx);
 							m.set(i, j, 0.0);
 							m.set(i, newIdx, 1.);
 						}
