@@ -1,7 +1,7 @@
 import java.util.LinkedList;
 import java.util.List;
 
-
+// small change
 public class Hashtag {
 
 	private int hashtagID;
