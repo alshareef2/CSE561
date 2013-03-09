@@ -1,4 +1,4 @@
-import java.sql.Time;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -6,7 +6,7 @@ import java.util.List;
 public class Tweet {
 
 	private int tweetID;
-	private Time time;
+	private Date time;
 	private int numberOfRT;
 	private int UserID;
 	private List<Hashtag> hashtags = new LinkedList<Hashtag>();
@@ -37,14 +37,14 @@ public class Tweet {
 	/**
 	 * @return the time
 	 */
-	public Time getTime() {
+	public Date getTime() {
 		return time;
 	}
 
 	/**
 	 * @param time the time to set
 	 */
-	public void setTime(Time time) {
+	public void setTime(Date time) {
 		this.time = time;
 	}
 	
