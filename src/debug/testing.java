@@ -1,3 +1,6 @@
+package debug;
+
+import types.Tweet;
 
 public class testing {
 
