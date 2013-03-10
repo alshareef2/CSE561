@@ -1,13 +1,12 @@
 package types;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 
-public class Tweet {
+public class Tweet implements Comparable<Tweet>, Cloneable{
 
 	private int tweetID;
-	private Date time;
+	private long time;
 	private int numberOfRT;
 	private int UserID;
 	private List<Hashtag> hashtags = new LinkedList<Hashtag>();
@@ -38,14 +37,14 @@ public class Tweet {
 	/**
 	 * @return the time
 	 */
-	public Date getTime() {
+	public long getTime() {
 		return time;
 	}
 
 	/**
 	 * @param time the time to set
 	 */
-	public void setTime(Date time) {
+	public void setTime(long time) {
 		this.time = time;
 	}
 	
@@ -90,6 +89,19 @@ public class Tweet {
 	 */
 	public void setHashtags(List<Hashtag> hashtags) {
 		this.hashtags = hashtags;
+	}
+
+	public int compareTo(Tweet otherTweet) {
+		return (int) (((Tweet) otherTweet).getTime() - getTime());
+	}
+	
+	public Object clone(){
+		Tweet t = new Tweet(tweetID);
+		t.numberOfRT = numberOfRT;
+		t.time = time;
+		
+		return UserID;
+		
 	}
 	
 	

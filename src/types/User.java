@@ -1,6 +1,9 @@
 package types;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public class User {
 
@@ -30,8 +33,6 @@ public class User {
 	public void setUserID(int userID) {
 		this.userID = userID;
 	}
-	
-	
 	
 	/**
 	 * @return the followers
@@ -67,6 +68,20 @@ public class User {
 	public List<Tweet> getTweets() {
 		return tweets;
 	}
+	
+	private List<Tweet> createTimeline(){
+		List<Tweet> timeline = new ArrayList<Tweet>();
+		for(User i : getFollowing()){
+			for(Tweet t: i.getTweets()){
+				timeline.add(t);
+			}
+		}
+		
+		Collections.sort(timeline);
+		Collections.reverse(timeline);
+		
+		return timeline;
+	}
 
 	/**
 	 * @param tweets the tweets to set
@@ -76,10 +91,18 @@ public class User {
 	}
 
 	public void retweet(int tweetID){
-		
+		//select the tweet to retweet
+		List<Tweet> timeline = createTimeline();
+		Random random = new Random();
+		Tweet toRetweet = timeline.get(random.nextInt(timeline.size()));
+		//perform the retweet
+		toRetweet.incrementNumberOfRT();
+		tweets.add(toRetweet);
 	}
 	
 	public void tweet(int tweetID){
+		Tweet newTweet = new Tweet(tweetID);
+		
 		
 	}
 }
