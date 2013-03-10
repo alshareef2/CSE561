@@ -3,7 +3,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class Tweet implements Comparable<Tweet>, Cloneable{
+public class Tweet implements Comparable<Tweet>{
 
 	private int tweetID;
 	private long time;
@@ -93,15 +93,6 @@ public class Tweet implements Comparable<Tweet>, Cloneable{
 
 	public int compareTo(Tweet otherTweet) {
 		return (int) (((Tweet) otherTweet).getTime() - getTime());
-	}
-	
-	public Object clone(){
-		Tweet t = new Tweet(tweetID);
-		t.numberOfRT = numberOfRT;
-		t.time = time;
-		
-		return UserID;
-		
 	}
 	
 	

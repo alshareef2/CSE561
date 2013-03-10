@@ -3,7 +3,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
+
+import selections.ItemSelector;
+import selections.UniformRandomSelector;
 
 public class User {
 
@@ -90,19 +92,23 @@ public class User {
 		this.tweets = tweets;
 	}
 
-	public void retweet(int tweetID){
+	public void retweet(int tweetID, long tweetTime){
 		//select the tweet to retweet
 		List<Tweet> timeline = createTimeline();
-		Random random = new Random();
-		Tweet toRetweet = timeline.get(random.nextInt(timeline.size()));
+		
+		ItemSelector<Tweet> findNextTweet = new UniformRandomSelector<Tweet>(timeline); 
+		Tweet toRetweet = findNextTweet.getNextItem();
 		//perform the retweet
 		toRetweet.incrementNumberOfRT();
 		tweets.add(toRetweet);
 	}
 	
-	public void tweet(int tweetID){
+	public void tweet(int tweetID, long tweetTime, List<Hashtag> hashtags){
 		Tweet newTweet = new Tweet(tweetID);
+		newTweet.setHashtags(hashtags);
+		newTweet.setTime(tweetTime);
+		newTweet.setUserID(this.userID);
 		
-		
+		tweets.add(newTweet);
 	}
 }
