@@ -30,7 +30,12 @@ public class UniformRandomSelector<T> implements ItemSelector<T> {
 
 	@Override
 	public T getNextItem() {
-		int idx = random.nextInt(items.size());
-		return items.get(idx);
+		if(items.size() == 0){
+			return null;
+		}
+		else{
+			int idx = random.nextInt(items.size() - 1);
+			return items.get(idx);
+		}
 	}
 }

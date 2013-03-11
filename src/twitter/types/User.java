@@ -99,8 +99,10 @@ public class User {
 		ItemSelector<Tweet> findNextTweet = new UniformRandomSelector<Tweet>(timeline); 
 		Tweet toRetweet = findNextTweet.getNextItem();
 		//perform the retweet
-		toRetweet.incrementNumberOfRT();
-		tweets.add(toRetweet);
+		if(toRetweet != null){
+			toRetweet.incrementNumberOfRT();
+			tweets.add(toRetweet);
+		}
 	}
 	
 	public void tweet(int tweetID, long tweetTime, List<Hashtag> hashtags){
