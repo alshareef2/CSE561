@@ -24,7 +24,8 @@ public class TweetG extends ViewableAtomic {
 	public static final String OUT_TWTCMD = "Tweet Commands";
 	
 	//state
-	private static final double tweetTimeInterval = 1.0;
+	private static final double tweetTimeInterval = 60.0;
+	private static final double ourSendtimeInterval = 1.;
 	private TwitterInitEntity sentOutTIE;
 	
 	public TweetG(){
@@ -79,7 +80,7 @@ public class TweetG extends ViewableAtomic {
 	}
 	
 	public void deltint(){
-		holdIn(STATE_PRODUCING_TWEET_CMDS, tweetTimeInterval);
+		holdIn(STATE_PRODUCING_TWEET_CMDS, ourSendtimeInterval);
 	}
 	
 }

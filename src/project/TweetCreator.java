@@ -6,12 +6,12 @@ import java.util.Random;
 
 import model.modeling.content;
 import model.modeling.message;
-import project.entities.HashtagTweetLists;
 import project.entities.TweetCommandEntity;
 import project.entities.TweetCommandType;
 import project.entities.TwitterInitEntity;
 import twitter.graphs.stylized.StylizedGraph;
 import twitter.types.Hashtag;
+import project.entities.HashtagTweetLists;
 import twitter.types.Tweet;
 import twitter.types.User;
 import view.modeling.ViewableAtomic;
@@ -22,6 +22,7 @@ public class TweetCreator extends ViewableAtomic{
 	public static final String STATE_NOTHING = "Rec_Network";
 	public static final String STATE_TIMETOTWEET = "Tweeting";
 	public static final String STATE_INTERCEPTED = "Intercepted";
+	public static final String STATE_RETURNSTATS = "forceReturnStats";
 	
 	//instance data
 	private StylizedGraph network;
@@ -33,10 +34,12 @@ public class TweetCreator extends ViewableAtomic{
 	private Random rng;
 	private long nextTweetID;
 	private long twitterTime;
+	private double timeLeft;
 	
 	//input ports
 	public static final String IN_CONFIG = "config";
 	public static final String IN_TWEETCOMMAND = "tweetCommand";
+	public static final String IN_RETURNSTATSNOW = "forceStats";
 	
 	//output ports
 	public static final String OUT_TWEET = "tweet";
@@ -132,7 +135,15 @@ public class TweetCreator extends ViewableAtomic{
 					System.out.println("Improper message on " + IN_TWEETCOMMAND);
 				}
 			}
-		}		
+		}
+		
+		//if we get a command to change the stats, then we will do that.
+		for(int i = 0; i < x.getLength(); i++){
+			if(messageOnPort(x, IN_RETURNSTATSNOW, i)){
+				timeLeft = sigma;
+				holdIn(STATE_RETURNSTATS, 0.0);
+			}
+		}
 	}
 	
 	public message out(){
@@ -168,7 +179,10 @@ public class TweetCreator extends ViewableAtomic{
 		}
 		else if(phaseIs(STATE_INTERCEPTED)){
 			holdIn(STATE_TIMETOTWEET, this.howOftenToTweet);
-			
+		}
+		else if(phaseIs(STATE_RETURNSTATS)){
+			holdIn(STATE_TIMETOTWEET, timeLeft);
+			timeLeft = 0;
 		}
 	}
 	
