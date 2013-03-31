@@ -6,12 +6,12 @@ import java.util.Random;
 
 import model.modeling.content;
 import model.modeling.message;
+import project.entities.HashtagTweetLists;
 import project.entities.TweetCommandEntity;
 import project.entities.TweetCommandType;
 import project.entities.TwitterInitEntity;
 import twitter.graphs.stylized.StylizedGraph;
 import twitter.types.Hashtag;
-import twitter.types.HashtagTweetLists;
 import twitter.types.Tweet;
 import twitter.types.User;
 import view.modeling.ViewableAtomic;

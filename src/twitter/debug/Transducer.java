@@ -1,8 +1,9 @@
 package twitter.debug;
 
+import project.entities.HashtagTweetLists;
+import project.entities.StatisticsEntity;
 import GenCol.entity;
 import model.modeling.message;
-import twitter.types.HashtagTweetLists;
 import view.modeling.ViewableAtomic;
 
 public class Transducer extends ViewableAtomic{
@@ -11,18 +12,23 @@ public class Transducer extends ViewableAtomic{
 	public static final String PASSIVE = "passive";
 	public static final String OBSERVE = "observing";
 	
+	
 	public Transducer(){
 		super("Tansducer");
 		observation_time = 100;
 		addInport("lists");
+		addInport("h_query");
 		addOutport("stat");
+		addOutport("send_lists");
 	}
 
 	public Transducer(String name, double ot){
 		super(name);
 		observation_time = ot;
 		addInport("lists");
+		addInport("h_query");
 		addOutport("stat");
+		addOutport("send_lists");
 	}
 
 	public void  deltext(double e,message x){
@@ -45,15 +51,21 @@ public class Transducer extends ViewableAtomic{
 	}
 	
 	public void deltint(){
+		process();
 		holdIn(PASSIVE, INFINITY);
 	}
 	
+	private void process() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public message out(){
 		message m = new message( );
 		if (phaseIs(OBSERVE)){
 			System.out.println("Some Stats!");
 			showState();
-			m.add(makeContent("stat", new entity("Job Completed")));
+			m.add(makeContent("stat", new StatisticsEntity()));
 		}
 		return m;
 	}

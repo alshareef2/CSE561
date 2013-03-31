@@ -1,7 +1,10 @@
-package twitter.types;
+package project.entities;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import twitter.types.Hashtag;
+import twitter.types.Tweet;
 
 import GenCol.entity;
 
