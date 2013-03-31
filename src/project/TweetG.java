@@ -14,6 +14,7 @@ import twitter.types.Hashtag;
 import twitter.types.User;
 import view.modeling.ViewableAtomic;
 
+// this comment indicates that you see my changes.
 public class TweetG extends ViewableAtomic {
 	//states
 	private static final String STATE_GENERATINGSETTINGS = "GenSettings";
