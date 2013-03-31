@@ -6,6 +6,7 @@ import GenCol.entity;
 import model.modeling.message;
 import view.modeling.ViewableAtomic;
 
+// Transd comment test
 public class Transducer extends ViewableAtomic{
 
 	double observation_time;
