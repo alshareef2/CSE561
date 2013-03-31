@@ -28,7 +28,6 @@ public class TwitterModel extends ViewableDigraph {
 		addCoupling(g, TweetG.OUT_SETTINGS, tm, TweetCreator.IN_CONFIG);
 		addCoupling(g, TweetG.OUT_TWTCMD, tm, TweetCreator.IN_TWEETCOMMAND);
 		
-		addCoupling(tm, TweetCreator.OUT_TAG, this, "OUT_TAG");
 		addCoupling(tm, TweetCreator.OUT_TWEET, this, "OUT_TWEET");
 		
 	}

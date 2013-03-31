@@ -8,10 +8,10 @@ import model.modeling.content;
 import model.modeling.message;
 import project.entities.TweetCommandEntity;
 import project.entities.TweetCommandType;
-import project.entities.TweetOutputEntity;
 import project.entities.TwitterInitEntity;
 import twitter.graphs.stylized.StylizedGraph;
 import twitter.types.Hashtag;
+import twitter.types.HashtagTweetLists;
 import twitter.types.Tweet;
 import twitter.types.User;
 import view.modeling.ViewableAtomic;
@@ -40,7 +40,6 @@ public class TweetCreator extends ViewableAtomic{
 	
 	//output ports
 	public static final String OUT_TWEET = "tweet";
-	public static final String OUT_TAG = "hashtag";
 	
 	public TweetCreator(){
 		this("TweetCreator");
@@ -57,7 +56,6 @@ public class TweetCreator extends ViewableAtomic{
 		addInport(IN_CONFIG);
 		addInport(IN_TWEETCOMMAND);
 		addOutport(OUT_TWEET);
-		addOutport(OUT_TAG);
 	}
 	
 	public void initialize(){
@@ -140,7 +138,12 @@ public class TweetCreator extends ViewableAtomic{
 	public message out(){
 		message m = new message();
 		
-		content c = makeContent(OUT_TWEET, new TweetOutputEntity(tweetsProduced));
+		List<Hashtag> tagsTweeted = new ArrayList<Hashtag>();
+		for(Tweet t : tweetsProduced){
+			tagsTweeted.addAll(t.getHashtags());
+		}
+		
+		content c = makeContent(OUT_TWEET, new HashtagTweetLists(tagsTweeted, tweetsProduced));
 		m.add(c);
 		
 		tweetsProduced.clear();
@@ -165,6 +168,7 @@ public class TweetCreator extends ViewableAtomic{
 		}
 		else if(phaseIs(STATE_INTERCEPTED)){
 			holdIn(STATE_TIMETOTWEET, this.howOftenToTweet);
+			
 		}
 	}
 	

@@ -13,6 +13,11 @@ public class HashtagTweetLists extends entity{
 	public HashtagTweetLists(){
 		
 	}
+	
+	public HashtagTweetLists(List<Hashtag> tags, List<Tweet> tweets){
+		hashtags = tags;
+		this.tweets = tweets;
+	}
 
 	/**
 	 * @return the hashtags
