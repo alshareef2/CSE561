@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Tweet implements Comparable<Tweet>{
 
-	private int tweetID;
+	private long tweetID;
 	private long time;
 	private int numberOfRT;
 	private int UserID;
@@ -14,8 +14,7 @@ public class Tweet implements Comparable<Tweet>{
 	/**
 	 * @param tweetID
 	 */
-	public Tweet(int tweetID) {
-		super();
+	public Tweet(long tweetID) {
 		this.tweetID = tweetID;
 		numberOfRT = 0;
 	}
@@ -23,7 +22,7 @@ public class Tweet implements Comparable<Tweet>{
 	/**
 	 * @return the tweetID
 	 */
-	public int getTweetID() {
+	public long getTweetID() {
 		return tweetID;
 	}
 

@@ -7,19 +7,39 @@ import java.util.List;
 import twitter.selections.ItemSelector;
 import twitter.selections.UniformRandomSelector;
 
-public class User {
+public class User implements Comparable<User>{
 
 	private int userID;
 	private List<User> followers = new LinkedList<User>();
 	private List<User> following = new LinkedList<User>();
 	private List<Tweet> tweets = new LinkedList<Tweet>();
+	private double pTweet;
+	private double pRetweet;
 	
+	public double getpTweet() {
+		return pTweet;
+	}
+
+	public void setpTweet(double pTweet) {
+		this.pTweet = pTweet;
+	}
+
+	public double getpRetweet() {
+		return pRetweet;
+	}
+
+	public void setpRetweet(double pRetweet) {
+		this.pRetweet = pRetweet;
+	}
+
 	/**
 	 * @param userID
 	 */
 	public User(int userID) {
 		super();
 		this.userID = userID;
+		pTweet = .33;
+		pRetweet = .33;
 	}
 
 	/**
@@ -92,7 +112,7 @@ public class User {
 		this.tweets = tweets;
 	}
 
-	public void retweet(int tweetID, long tweetTime){
+	public Tweet retweet(long nextTweetID, long tweetTime){
 		//select the tweet to retweet
 		List<Tweet> timeline = createTimeline();
 		
@@ -103,14 +123,21 @@ public class User {
 			toRetweet.incrementNumberOfRT();
 			tweets.add(toRetweet);
 		}
+		
+		return toRetweet;
 	}
 	
-	public void tweet(int tweetID, long tweetTime, List<Hashtag> hashtags){
-		Tweet newTweet = new Tweet(tweetID);
+	public Tweet tweet(long nextTweetID, long tweetTime, List<Hashtag> hashtags){
+		Tweet newTweet = new Tweet(nextTweetID);
 		newTweet.setHashtags(hashtags);
 		newTweet.setTime(tweetTime);
 		newTweet.setUserID(this.userID);
 		
 		tweets.add(newTweet);
+		return newTweet;
+	}
+
+	public int compareTo(User otherUser) {
+		return otherUser.userID - userID;
 	}
 }
