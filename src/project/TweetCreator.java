@@ -6,12 +6,12 @@ import java.util.Random;
 
 import model.modeling.content;
 import model.modeling.message;
+import project.entities.HashtagTweetLists;
 import project.entities.TweetCommandEntity;
 import project.entities.TweetCommandType;
 import project.entities.TwitterInitEntity;
 import twitter.graphs.stylized.StylizedGraph;
 import twitter.types.Hashtag;
-import project.entities.HashtagTweetLists;
 import twitter.types.Tweet;
 import twitter.types.User;
 import view.modeling.ViewableAtomic;
@@ -51,6 +51,7 @@ public class TweetCreator extends ViewableAtomic{
 	}
 	
 	public TweetCreator(String name){
+		super(name);
 		
 		rng = new Random();
 		tweetsProduced = new ArrayList<Tweet>();
@@ -60,6 +61,7 @@ public class TweetCreator extends ViewableAtomic{
 		//add the ports
 		addInport(IN_CONFIG);
 		addInport(IN_TWEETCOMMAND);
+		addInport(IN_RETURNSTATSNOW);
 		addOutport(OUT_TWEET);
 	}
 	
@@ -151,15 +153,18 @@ public class TweetCreator extends ViewableAtomic{
 	public message out(){
 		message m = new message();
 		
-		List<Hashtag> tagsTweeted = new ArrayList<Hashtag>();
-		for(Tweet t : tweetsProduced){
-			tagsTweeted.addAll(t.getHashtags());
+		if(phaseIs(STATE_RETURNSTATS)){
+			List<Hashtag> tagsTweeted = new ArrayList<Hashtag>();
+			for(Tweet t : tweetsProduced){
+				tagsTweeted.addAll(t.getHashtags());
+			}
+			
+			content c = makeContent(OUT_TWEET, new HashtagTweetLists(tagsTweeted, tweetsProduced));
+			m.add(c);
+			
+			tweetsProduced.clear();
 		}
 		
-		content c = makeContent(OUT_TWEET, new HashtagTweetLists(tagsTweeted, tweetsProduced));
-		m.add(c);
-		
-		tweetsProduced.clear();
 		return m;
 	}
 	
@@ -176,8 +181,8 @@ public class TweetCreator extends ViewableAtomic{
 				else if(actionRoll > u.getpTweet() && actionRoll <= u.getpTweet() + u.getpRetweet()){
 					tweetsProduced.add(u.retweet(nextTweetID++, twitterTime));
 				}
-				
 			}
+			twitterTime++;
 		}
 		else if(phaseIs(STATE_INTERCEPTED)){
 			holdIn(STATE_TIMETOTWEET, this.howOftenToTweet);
