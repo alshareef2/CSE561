@@ -4,6 +4,8 @@ import project.entities.HashtagTweetLists;
 import project.entities.StatisticsEntity;
 import GenCol.entity;
 import model.modeling.message;
+import twitter.types.Hashtag;
+import twitter.types.Tweet;
 import view.modeling.ViewableAtomic;
 
 // Transd comment test
@@ -12,8 +14,9 @@ public class Transducer extends ViewableAtomic{
 	double observation_time;
 	public static final String PASSIVE = "passive";
 	public static final String OBSERVE = "observing";
-	
-	
+	HashtagTweetLists ht;
+	StatisticsEntity stat = new StatisticsEntity();
+
 	public Transducer(){
 		super("Tansducer");
 		observation_time = 100;
@@ -34,8 +37,8 @@ public class Transducer extends ViewableAtomic{
 
 	public void  deltext(double e,message x){
 		Continue(e);
-		HashtagTweetLists ht = null;
-		
+		ht = null;
+
 		for (int i=0; i< x.getLength();i++){
 			if (messageOnPort(x,"lists",i))
 			{
@@ -45,20 +48,48 @@ public class Transducer extends ViewableAtomic{
 				if(ht != null){
 					if(phaseIs(PASSIVE))
 						holdIn(OBSERVE, observation_time);
-						//observation time can be calculated based on the input data e.g: number of hashtags
+					process();
+					//bservation time can be calculated based on the input data e.g: number of hashtags
 				}
 			}
 		}
 	}
-	
+
 	public void deltint(){
-		process();
+		//process();
 		holdIn(PASSIVE, INFINITY);
 	}
-	
+
 	private void process() {
-		// TODO Auto-generated method stub
+		for (Hashtag hashtag : ht.getHashtags()) {
+				stat.getHashtags().put(hashtag, 0);
+		}
 		
+		Tweet top_rt = new Tweet(-1111);
+		Hashtag top_h = new Hashtag(-1111,"","");
+		int max = 0;
+		
+		for (Tweet tweet : ht.getTweets()) {
+			if(tweet.getNumberOfRT() > top_rt.getNumberOfRT())
+				top_rt = tweet;
+			
+			for (Hashtag hashtag : tweet.getHashtags()) {
+				if(stat.getHashtags().containsKey(hashtag))
+					stat.getHashtags().put(hashtag, stat.getHashtags().get(hashtag) + 1);
+			}
+			
+		}
+		
+		stat.setTop_retweeted(top_rt);
+		
+		for (Hashtag hashtag : ht.getHashtags()) {
+			if(stat.getHashtags().get(hashtag) > max){
+				max = stat.getHashtags().get(hashtag);
+				top_h = hashtag;
+			}
+		}
+		
+		stat.setTop_tweeted(top_h);
 	}
 
 	public message out(){
@@ -66,7 +97,7 @@ public class Transducer extends ViewableAtomic{
 		if (phaseIs(OBSERVE)){
 			System.out.println("Some Stats!");
 			showState();
-			m.add(makeContent("stat", new StatisticsEntity()));
+			m.add(makeContent("stat", stat));
 		}
 		return m;
 	}
