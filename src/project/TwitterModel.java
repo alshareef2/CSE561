@@ -3,6 +3,8 @@ package project;
 import java.awt.Dimension;
 import java.awt.Point;
 
+import GenCol.entity;
+
 import twitter.debug.Transducer;
 import view.modeling.ViewableAtomic;
 import view.modeling.ViewableComponent;
@@ -26,6 +28,11 @@ public class TwitterModel extends ViewableDigraph {
 		add(g);
 		add(tm);
 		add(tr);
+		
+		addInport("putTweetNow");
+		addTestInput("putTweetNow", new entity("Getstats"));
+		
+		addCoupling(this, "putTweetNow", tm, TweetCreator.IN_RETURNSTATSNOW);
 		
 		addCoupling(g, TweetG.OUT_SETTINGS, tm, TweetCreator.IN_CONFIG);
 		addCoupling(g, TweetG.OUT_TWTCMD, tm, TweetCreator.IN_TWEETCOMMAND);
