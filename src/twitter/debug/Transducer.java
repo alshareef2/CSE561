@@ -7,7 +7,7 @@ import model.modeling.message;
 import twitter.types.Hashtag;
 import twitter.types.Tweet;
 import view.modeling.ViewableAtomic;
-
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 // Transd comment test
 public class Transducer extends ViewableAtomic{
 
