@@ -212,7 +212,7 @@ public class TweetCreator extends ViewableAtomic{
         tagsTweeted.addAll(t.getHashtags());  
       }
     }
-    content c = makeContent(OUT_TWEET, new HashtagTweetLists(tagsTweeted, tweetsTweeted));
+    content c = makeContent(OUT_TWEET, new HashtagTweetLists(tagsTweeted, tweetsTweeted, phaseIs(STATE_RETURNSTATS)));
     m.add(c);
     tweetsProduced.clear();
 

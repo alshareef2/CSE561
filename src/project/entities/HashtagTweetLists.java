@@ -12,14 +12,24 @@ public class HashtagTweetLists extends entity{
 
 	private List<Hashtag> hashtags = new LinkedList<Hashtag>();
 	private List<Tweet> tweets = new LinkedList<Tweet>();
+	private boolean isForced;
 	
 	public HashtagTweetLists(){
 		
 	}
 	
-	public HashtagTweetLists(List<Hashtag> tags, List<Tweet> tweets){
+	public HashtagTweetLists(List<Hashtag> tags, List<Tweet> tweets, boolean isForced){
 		hashtags = tags;
 		this.tweets = tweets;
+		this.isForced = isForced;
+	}
+
+	public void setIsForced(boolean isForced){
+		this.isForced = isForced;
+	}
+
+	public boolean isForced(){
+		return isForced;
 	}
 
 	/**
