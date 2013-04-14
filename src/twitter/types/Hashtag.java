@@ -106,6 +106,10 @@ public class Hashtag {
 	public void setTweets(List<Tweet> tweets) {
 		this.tweets = tweets;
 	}
+
+	public String toString(){
+		return text;
+	}
 	
 	
 }

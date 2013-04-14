@@ -102,7 +102,7 @@ public class TweetCreator extends ViewableAtomic{
         tagsToTweet = getHashtagsToTweet();
       }
       Tweet tweetedTweet = actionUser.tweet(nextTweetID++, twitterTime, tagsToTweet);
-      System.out.println(tweetedTweet);
+      System.out.println("I am Tweeting: " + tweetedTweet);
       tweetsProduced.add(tweetedTweet);
       //if one of the tags is in the the extreme topic, tweet twice.
       if(extremeTopic != null && extremeTopic.getDuration() > 0.0){
@@ -200,13 +200,16 @@ public class TweetCreator extends ViewableAtomic{
     
     // if(phaseIs(STATE_RETURNSTATS) || phaseIs(STATE_INTERCEPTED)){
       List<Hashtag> tagsTweeted = new ArrayList<Hashtag>();
-      for(Tweet t : tweetsProduced){
+      List<Tweet> tweetsTweeted = new ArrayList<Tweet>();
+      for(int i = tweetsProduced.size() - 1; i >= 0; i--){
+        Tweet t = tweetsProduced.remove(i);
+        tweetsTweeted.add(t);
         System.out.println("Sending: " + t);
         if(t != null && t.getHashtags() != null){
           tagsTweeted.addAll(t.getHashtags());  
         }
       }
-      content c = makeContent(OUT_TWEET, new HashtagTweetLists(tagsTweeted, tweetsProduced));
+      content c = makeContent(OUT_TWEET, new HashtagTweetLists(tagsTweeted, tweetsTweeted));
       m.add(c);
       tweetsProduced.clear();
     // }
