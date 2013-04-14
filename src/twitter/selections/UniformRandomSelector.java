@@ -34,7 +34,7 @@ public class UniformRandomSelector<T> implements ItemSelector<T> {
 			return null;
 		}
 		else{
-			int idx = random.nextInt(items.size() - 1);
+			int idx = random.nextInt(items.size());
 			return items.get(idx);
 		}
 	}
