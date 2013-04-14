@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<project name="test" default="compile" basedir="."> 
+
+     <property name="src" value="src"/> 
+     <property name="build" value="/Users/fred/tmp/cseprojbuild"/>
+
+     <path id="master-classpath">
+      <fileset dir=".">
+        <include name="*.jar"/>
+      </fileset>
+      <pathelement path="${build.dir}"/>
+    </path>
+
+     <target name="init">  
+        <mkdir dir="${build}"/>
+     </target>
+
+     <target name="compile" depends="init">           
+      <javac srcdir="${src}" destdir="${build}">
+        <classpath refid="master-classpath"/>
+      </javac>
+      <!-- Move the graphics folder -->
+      <copy todir="${build}">
+        <fileset dir="${src}/graphics" /> 
+      </copy>
+     </target>
+
+     <target name="run" depends="compile">
+      <java dir="${build}" fork="true" classname="controller.Controller">
+        <classpath refid="master-classpath" /> 
+      </java> 
+     </target>
+
+     <target name="clean">
+      <delete>
+        <fileset dir="${build}" />
+      </delete>
+     </target>
+</project>
