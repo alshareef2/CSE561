@@ -99,7 +99,7 @@ public class TweetCreator extends ViewableAtomic{
         tagsToTweet = command.getTagsToTweet();
       }
       else{
-        tagsToTweet = getHashtagsToTweet();
+        tagsToTweet = getHashtagsToTweet(1);
       }
       Tweet tweetedTweet = actionUser.tweet(nextTweetID++, twitterTime, tagsToTweet);
       System.out.println("I am Tweeting: " + tweetedTweet);
@@ -126,14 +126,18 @@ public class TweetCreator extends ViewableAtomic{
     }
   }
   
-  private List<Hashtag> getHashtagsToTweet(){
+  private List<Hashtag> getHashtagsToTweet(int size){
     List<Hashtag> tagsToTweet = new ArrayList<Hashtag>();
-    tagsToTweet.add(tagsInPlay.get(rng.nextInt(tagsInPlay.size())));
+    while(size-- > 0){
+      tagsToTweet.add(tagsInPlay.get(rng.nextInt(tagsInPlay.size())));  
+    }
     return tagsToTweet;
   }
   
   public void deltext(double e, message x){
     Continue(e);
+    // twitterTime += e;
+
     if(extremeTopic != null){
       extremeTopic.elapse(e);
     }
@@ -198,21 +202,20 @@ public class TweetCreator extends ViewableAtomic{
   public message out(){
     message m = new message();
     
-    // if(phaseIs(STATE_RETURNSTATS) || phaseIs(STATE_INTERCEPTED)){
-      List<Hashtag> tagsTweeted = new ArrayList<Hashtag>();
-      List<Tweet> tweetsTweeted = new ArrayList<Tweet>();
-      for(int i = tweetsProduced.size() - 1; i >= 0; i--){
-        Tweet t = tweetsProduced.remove(i);
-        tweetsTweeted.add(t);
-        System.out.println("Sending: " + t);
-        if(t != null && t.getHashtags() != null){
-          tagsTweeted.addAll(t.getHashtags());  
-        }
+    List<Hashtag> tagsTweeted = new ArrayList<Hashtag>();
+    List<Tweet> tweetsTweeted = new ArrayList<Tweet>();
+    for(int i = tweetsProduced.size() - 1; i >= 0; i--){
+      Tweet t = tweetsProduced.remove(i);
+      tweetsTweeted.add(t);
+      System.out.println("Sending: " + t);
+      if(t != null && t.getHashtags() != null){
+        tagsTweeted.addAll(t.getHashtags());  
       }
-      content c = makeContent(OUT_TWEET, new HashtagTweetLists(tagsTweeted, tweetsTweeted));
-      m.add(c);
-      tweetsProduced.clear();
-    // }
+    }
+    content c = makeContent(OUT_TWEET, new HashtagTweetLists(tagsTweeted, tweetsTweeted));
+    m.add(c);
+    tweetsProduced.clear();
+
     return m;
   }
   
@@ -223,7 +226,7 @@ public class TweetCreator extends ViewableAtomic{
       for(User u : users){
         actionRoll = rng.nextDouble();
         if(actionRoll <= u.getpTweet()){
-          List<Hashtag> tagsToTweet = getHashtagsToTweet();
+          List<Hashtag> tagsToTweet = getHashtagsToTweet(1);
           tweetsProduced.add(u.tweet(nextTweetID++, twitterTime, tagsToTweet));
         }
         else if(actionRoll > u.getpTweet() && actionRoll <= u.getpTweet() + u.getpRetweet()){
@@ -234,6 +237,7 @@ public class TweetCreator extends ViewableAtomic{
     }
     else if(phaseIs(STATE_INTERCEPTED)){
       holdIn(STATE_TIMETOTWEET, this.howOftenToTweet);
+      twitterTime++;  
     }
     else if(phaseIs(STATE_RETURNSTATS)){
       holdIn(STATE_TIMETOTWEET, timeLeft);

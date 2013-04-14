@@ -105,7 +105,7 @@ public class Tweet implements Comparable<Tweet>{
   }
 
   public String toString(){
-    String s = "Text: ";
+    String s = "ID: " + tweetID + ", Text: ";
 
     if(hashtags != null){
       for(Hashtag ht : hashtags){
@@ -113,7 +113,7 @@ public class Tweet implements Comparable<Tweet>{
       }
     }
 
-    return s;
+    return s + ", Authored at: " + time;
   }
   
   
