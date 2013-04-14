@@ -50,8 +50,8 @@ public class TwitterModel extends ViewableDigraph {
     public void layoutForSimView()
     {
         preferredSize = new Dimension(591, 332);
-        ((ViewableComponent)withName("TweetCreator")).setPreferredLocation(new Point(144, 86));
-        ((ViewableComponent)withName("Tansducer")).setPreferredLocation(new Point(166, 240));
-        ((ViewableComponent)withName("Real Tweet Gen")).setPreferredLocation(new Point(-1, 33));
+        ((ViewableComponent)withName("Real Tweet Gen")).setPreferredLocation(new Point(21, 26));
+        ((ViewableComponent)withName("TweetCreator")).setPreferredLocation(new Point(93, 114));
+        ((ViewableComponent)withName("Tansducer")).setPreferredLocation(new Point(199, 250));
     }
 }

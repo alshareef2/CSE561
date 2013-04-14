@@ -19,7 +19,7 @@ public class Transducer extends ViewableAtomic{
 
 	public Transducer(){
 		super("Tansducer");
-		observation_time = 100;
+		observation_time = 10;
 		addInport("lists");
 		addInport("h_query");
 		addOutport("stat");
@@ -34,6 +34,10 @@ public class Transducer extends ViewableAtomic{
 		addOutport("stat");
 		addOutport("send_lists");
 	}
+	
+	public void initialize(){
+		holdIn(PASSIVE, INFINITY);
+	}
 
 	public void  deltext(double e,message x){
 		Continue(e);
@@ -46,9 +50,10 @@ public class Transducer extends ViewableAtomic{
 					ht = (HashtagTweetLists) x.getValOnPort("lists", i);
 
 				if(ht != null){
-					if(phaseIs(PASSIVE))
+					if(phaseIs(PASSIVE)){
 						holdIn(OBSERVE, observation_time);
-					process();
+						process();
+					}
 					//bservation time can be calculated based on the input data e.g: number of hashtags
 				}
 			}
@@ -68,10 +73,12 @@ public class Transducer extends ViewableAtomic{
 		Tweet top_rt = new Tweet(-1111);
 		Hashtag top_h = new Hashtag(-1111,"","");
 		int max = 0;
-		
+		System.out.println("Number of Tweets: "+ht.getTweets().size() + ", Hashtags: "+ ht.getHashtags().size());
 		for (Tweet tweet : ht.getTweets()) {
-			if(tweet.getNumberOfRT() > top_rt.getNumberOfRT())
+			System.out.println("TWEET ID:" + top_rt.getTweetID() + ",NoOfRT" + top_rt.getNumberOfRT());
+			if(tweet.getNumberOfRT() >= top_rt.getNumberOfRT()){
 				top_rt = tweet;
+			}
 			
 			for (Hashtag hashtag : tweet.getHashtags()) {
 				if(stat.getHashtags().containsKey(hashtag))
@@ -83,7 +90,8 @@ public class Transducer extends ViewableAtomic{
 		stat.setTop_retweeted(top_rt);
 		
 		for (Hashtag hashtag : ht.getHashtags()) {
-			if(stat.getHashtags().get(hashtag) > max){
+			//System.out.println("HASHTAG ID:" + top_h.getHashtagID() + ",TEXT" + top_h.getText());
+			if(stat.getHashtags().get(hashtag) >= max){
 				max = stat.getHashtags().get(hashtag);
 				top_h = hashtag;
 			}
@@ -95,7 +103,8 @@ public class Transducer extends ViewableAtomic{
 	public message out(){
 		message m = new message( );
 		if (phaseIs(OBSERVE)){
-			System.out.println("Some Stats!");
+			System.out.println("Some Stats 1: " + stat.getTop_tweeted().getHashtagID());
+			System.out.println("Some Stats 2: " + stat.getTop_retweeted().getTweetID());
 			showState();
 			m.add(makeContent("stat", stat));
 		}

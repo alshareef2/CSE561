@@ -9,7 +9,7 @@ public class Tweet implements Comparable<Tweet>{
 	private long time;
 	private int numberOfRT;
 	private int UserID;
-	private List<Hashtag> hashtags = new LinkedList<Hashtag>();
+	private List<Hashtag> hashtags;
 
 	/**
 	 * @param tweetID
@@ -17,6 +17,16 @@ public class Tweet implements Comparable<Tweet>{
 	public Tweet(long tweetID) {
 		this.tweetID = tweetID;
 		numberOfRT = 0;
+		hashtags = new LinkedList<Hashtag>();
+	}
+
+	public Tweet logicalCopy(Tweet twt){
+		twt.time = time;
+		twt.numberOfRT = 0;
+		twt.UserID = UserID;
+		twt.hashtags = hashtags;
+
+		return twt;
 	}
 
 	/**

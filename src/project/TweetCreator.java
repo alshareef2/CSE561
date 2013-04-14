@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import project.entities.ExtremeTopicCommand;
+
 import model.modeling.content;
 import model.modeling.message;
-import project.entities.HashtagTweetLists;
-import project.entities.TweetCommandEntity;
-import project.entities.TweetCommandType;
-import project.entities.TwitterInitEntity;
+import project.entities.*;
 import twitter.graphs.stylized.StylizedGraph;
 import twitter.types.Hashtag;
 import twitter.types.Tweet;
@@ -32,6 +31,8 @@ public class TweetCreator extends ViewableAtomic{
 	private List<Hashtag> tagsInPlay;
 	private List<Tweet> tweetsProduced;
 	private double howOftenToTweet;
+
+	private ExtremeTopicCommand extremeTopic;
 	
 	private Random rng;
 	private long nextTweetID;
@@ -42,6 +43,7 @@ public class TweetCreator extends ViewableAtomic{
 	public static final String IN_CONFIG = "config";
 	public static final String IN_TWEETCOMMAND = "tweetCommand";
 	public static final String IN_RETURNSTATSNOW = "forceStats";
+	public static final String IN_EXTREMETOPIC = "extremeTopic";
 	
 	//output ports
 	public static final String OUT_TWEET = "tweet";
@@ -62,6 +64,7 @@ public class TweetCreator extends ViewableAtomic{
 		addInport(IN_CONFIG);
 		addInport(IN_TWEETCOMMAND);
 		addInport(IN_RETURNSTATSNOW);
+		addInport(IN_EXTREMETOPIC);
 		addOutport(OUT_TWEET);
 	}
 	
@@ -82,7 +85,10 @@ public class TweetCreator extends ViewableAtomic{
 				List<Integer> friends = network.getUsersFriends(actionUser.getUserID());
 				userToRetweet = users.get(friends.get(rng.nextInt(friends.size())));
 			}
-			tweetsProduced.add(actionUser.retweet(nextTweetID++, twitterTime));
+			Tweet retweetedTweet = actionUser.retweet(nextTweetID++, twitterTime);
+			if(retweetedTweet != null){
+				tweetsProduced.add(retweetedTweet);	
+			}
 			break;
 		case TWEET:
 			List<Hashtag> tagsToTweet;
@@ -92,7 +98,23 @@ public class TweetCreator extends ViewableAtomic{
 			else{
 				tagsToTweet = getHashtagsToTweet();
 			}
-			tweetsProduced.add(actionUser.tweet(nextTweetID++, twitterTime, tagsToTweet));
+			Tweet tweetedTweet = actionUser.tweet(nextTweetID++, twitterTime, tagsToTweet);
+			tweetsProduced.add(tweetedTweet);
+			//if one of the tags is in the the extreme topic, tweet twice.
+			if(extremeTopic != null && extremeTopic.getDuration() > 0.0){
+				boolean shouldTweetAgain = false;
+				for(Hashtag tag : tagsToTweet){
+					if(tag.getTopic().equals(extremeTopic.getTopic())){
+						shouldTweetAgain = true;
+					}
+				}
+				if(shouldTweetAgain){
+					Tweet anotherTweet = new Tweet(nextTweetID++);
+					tweetedTweet.logicalCopy(anotherTweet);
+					tweetsProduced.add(tweetedTweet);
+				}
+			}
+			
 			break;
 		case DONOTHING:
 		default:
@@ -109,6 +131,9 @@ public class TweetCreator extends ViewableAtomic{
 	
 	public void deltext(double e, message x){
 		Continue(e);
+		if(extremeTopic != null){
+			extremeTopic.elapse(e);
+		}
 		
 		//if we get a new network info, then we will change the sate
 		for(int i = 0; i < x.getLength(); i++){
@@ -126,13 +151,30 @@ public class TweetCreator extends ViewableAtomic{
 				}
 			}
 		}
+
+		//if we get an extreme topic, then store it
+		for(int i = 0; i < x.getLength(); i++){
+			if(messageOnPort(x, IN_EXTREMETOPIC, i)){
+				try{
+					ExtremeTopicCommand tmp = (ExtremeTopicCommand)x.getValOnPort(IN_EXTREMETOPIC, i);
+					
+				}
+				catch(ClassCastException cce){
+					System.out.println("Improper message on " + IN_CONFIG);
+				}
+			}
+		}
 		
 		//if we get a tweet command
 		for(int i = 0; i < x.getLength(); i++){
 			if(messageOnPort(x, IN_TWEETCOMMAND, i)){
 				try{
-					TweetCommandEntity tmp = (TweetCommandEntity)x.getValOnPort(IN_TWEETCOMMAND, i);
-					processTweetCommand(tmp);
+					TweetCommandEntityList tmp = (TweetCommandEntityList)x.getValOnPort(IN_TWEETCOMMAND, i);
+					List<TweetCommandEntity> commands = tmp.getEntities();
+					for(TweetCommandEntity tce : commands){
+						processTweetCommand(tce);	
+					}
+					
 					holdIn(STATE_INTERCEPTED, sigma);
 				}
 				catch(ClassCastException cce){
@@ -153,18 +195,17 @@ public class TweetCreator extends ViewableAtomic{
 	public message out(){
 		message m = new message();
 		
-		if(phaseIs(STATE_RETURNSTATS)){
+		// if(phaseIs(STATE_RETURNSTATS) || phaseIs(STATE_INTERCEPTED)){
 			List<Hashtag> tagsTweeted = new ArrayList<Hashtag>();
 			for(Tweet t : tweetsProduced){
-				tagsTweeted.addAll(t.getHashtags());
+				if(t != null && t.getHashtags() != null){
+					tagsTweeted.addAll(t.getHashtags());	
+				}
 			}
-			
 			content c = makeContent(OUT_TWEET, new HashtagTweetLists(tagsTweeted, tweetsProduced));
 			m.add(c);
-			
 			tweetsProduced.clear();
-		}
-		
+		// }
 		return m;
 	}
 	
