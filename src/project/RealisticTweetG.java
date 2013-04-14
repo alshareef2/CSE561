@@ -10,7 +10,7 @@ import model.modeling.content;
 import model.modeling.message;
 
 import project.entities.*;
-import twitter.graphs.stylized.WattsStrogatz;
+import twitter.graphs.stylized.*;
 import twitter.types.Hashtag;
 import twitter.types.User;
 import view.modeling.ViewableAtomic;
@@ -22,8 +22,10 @@ public class RealisticTweetG extends ViewableAtomic {
   private static final String STATE_PRODUCING_TWEET_CMDS = "SendTweets";
 
   //random things
-  private static final int NUM_USERS = 1000;
-  private static final int NUM_FRIENDS = 130;
+  // private static final int NUM_USERS = 1000;
+  // private static final int NUM_FRIENDS = 130;
+  private static final int NUM_USERS = 3;
+  private static final int NUM_FRIENDS = 2;
   
   //output ports
   public static final String OUT_SETTINGS = "Settings";
@@ -66,7 +68,8 @@ public class RealisticTweetG extends ViewableAtomic {
     
     if(phaseIs(STATE_GENERATINGSETTINGS)){
       TwitterInitEntity tie = new TwitterInitEntity();
-      tie.setNetwork(new WattsStrogatz(NUM_USERS, NUM_FRIENDS, .6));
+      StylizedGraph net = new WattsStrogatz(NUM_USERS, NUM_FRIENDS, .6);
+      tie.setNetwork(net);
 
       //set up the hashtags
       List<Hashtag> hashtags = new ArrayList<Hashtag>();
@@ -78,8 +81,25 @@ public class RealisticTweetG extends ViewableAtomic {
       //set up the users
       users = new ArrayList<User>();
       for(int i = 0; i < NUM_USERS; i++){
-        users.add(new User(i));
+        User tmp = new User(i);
+        users.add(tmp);
       }
+
+      //add friend/follower information
+      for(int i = 0; i < NUM_USERS; i++){
+        User tmp = users.get(i);
+        List<User> followers = new ArrayList<User>();
+        List<User> friends = new ArrayList<User>();
+        for(int j : net.getUsersFollowers(i)){
+          followers.add(users.get(j));
+        }
+        for(int j : net.getUsersFriends(i)){
+          friends.add(users.get(j));
+        }
+        tmp.setFollowing(friends);
+        tmp.setFollowers(followers);
+      }
+
       tie.setUsers(users);
       
       tie.setTimeToAction(tweetTimeInterval);
