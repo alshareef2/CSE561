@@ -21,7 +21,7 @@ public class TwitterModel extends ViewableDigraph {
 		
 		addOutport("OUT");
 		
-		ViewableAtomic g = new TweetG();
+		ViewableAtomic g = new RealisticTweetG();
 		ViewableAtomic tm = new TweetCreator();
 		ViewableAtomic tr = new Transducer();
 		
