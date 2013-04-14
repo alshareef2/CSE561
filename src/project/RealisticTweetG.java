@@ -9,9 +9,7 @@ import project.util.ZipfGenerator;
 import model.modeling.content;
 import model.modeling.message;
 
-import project.entities.TweetCommandEntity;
-import project.entities.TweetCommandType;
-import project.entities.TwitterInitEntity;
+import project.entities.*;
 import twitter.graphs.stylized.WattsStrogatz;
 import twitter.types.Hashtag;
 import twitter.types.User;
@@ -24,7 +22,7 @@ public class RealisticTweetG extends ViewableAtomic {
   private static final String STATE_PRODUCING_TWEET_CMDS = "SendTweets";
 
   //random things
-  private static final int NUM_USERS = 10000;
+  private static final int NUM_USERS = 1000;
   private static final int NUM_FRIENDS = 130;
   
   //output ports
@@ -35,12 +33,15 @@ public class RealisticTweetG extends ViewableAtomic {
   private Random rng;
   private ZipfGenerator zg;
   
+  //network stuff
+  private List<User> users;
+
   //state
   private static final double tweetTimeInterval = 60.0;
   private static final double ourSendtimeInterval = 1.;
   private TwitterInitEntity sentOutTIE;
   
-  public TweetG(){
+  public RealisticTweetG(){
     super("Real Tweet Gen");
     
     addOutport(OUT_SETTINGS);
@@ -51,10 +52,12 @@ public class RealisticTweetG extends ViewableAtomic {
   }
   
   public void initialize(){
+    System.out.println("HERE 5");
     holdIn(STATE_GENERATINGSETTINGS, 0);
   }
   
   public message out(){
+    System.out.println("HERE 6");
     message m = new message();
     content c = null;
     double averageTweetsPerSecond = 2.0;
@@ -73,7 +76,7 @@ public class RealisticTweetG extends ViewableAtomic {
       tie.setHashtags(hashtags);
       
       //set up the users
-      List<User> users = new ArrayList<User>();
+      users = new ArrayList<User>();
       for(int i = 0; i < NUM_USERS; i++){
         users.add(new User(i));
       }
@@ -86,7 +89,7 @@ public class RealisticTweetG extends ViewableAtomic {
     }
     else if(phaseIs(STATE_PRODUCING_TWEET_CMDS)){
 
-      int numTweets = (int) (Math.random() * standardDevTweetsPerSecond + averageTweetsPerSecond);
+      int numTweets = (int) ((rng.nextDouble() + averageTweetsPerSecond) * standardDevTweetsPerSecond);
 
       TweetCommandEntityList tcel = new TweetCommandEntityList();
       for(int i = 0; i < numTweets; i++){
