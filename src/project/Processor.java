@@ -1,16 +1,11 @@
 package project;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import model.modeling.message;
 import project.entities.HashtagTweetLists;
 import project.entities.StatisticsEntity;
 import twitter.types.Hashtag;
 import twitter.types.Tweet;
 import view.modeling.ViewableAtomic;
-
-import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 
 public class Processor extends ViewableAtomic{
