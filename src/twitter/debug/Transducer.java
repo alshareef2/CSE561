@@ -73,9 +73,9 @@ public class Transducer extends ViewableAtomic{
 		Tweet top_rt = new Tweet(-1111);
 		Hashtag top_h = new Hashtag(-1111,"","");
 		int max = 0;
-		System.out.println("Number of Tweets: "+ht.getTweets().size() + ", Hashtags: "+ ht.getHashtags().size());
+		System.out.println("Number of Tweets: "+ht.getTweets().size() + ", Hashtags: "+ stat.getHashtags().size());
 		for (Tweet tweet : ht.getTweets()) {
-			System.out.println("TWEET ID:" + top_rt.getTweetID() + ",NoOfRT" + top_rt.getNumberOfRT());
+			System.out.println("TWEET ID:" + tweet.getTweetID() + ",Time: " + tweet.getTime());
 			if(tweet.getNumberOfRT() >= top_rt.getNumberOfRT()){
 				top_rt = tweet;
 			}
@@ -103,7 +103,7 @@ public class Transducer extends ViewableAtomic{
 	public message out(){
 		message m = new message( );
 		if (phaseIs(OBSERVE)){
-			System.out.println("Some Stats 1: " + stat.getTop_tweeted().getHashtagID());
+			System.out.println("Some Stats 1: " + stat.getTop_tweeted().getText());
 			System.out.println("Some Stats 2: " + stat.getTop_retweeted().getTweetID());
 			showState();
 			m.add(makeContent("stat", stat));
