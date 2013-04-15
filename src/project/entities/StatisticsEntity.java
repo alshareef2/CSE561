@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.math3.linear.RealMatrix;
+
 import twitter.types.Hashtag;
 import twitter.types.Tweet;
 import GenCol.entity;
@@ -13,6 +15,8 @@ public class StatisticsEntity extends entity{
 	private String processedBy;
 	private Hashtag top_tweeted;
 	private Tweet top_retweeted;
+	private RealMatrix coe_matrix;
+	private double entropy;
 	private Map<Hashtag, Integer> hashtags = new HashMap<Hashtag, Integer>();
 	
 	public StatisticsEntity(){
@@ -25,6 +29,22 @@ public class StatisticsEntity extends entity{
 	
 	public String getProcessedBy(){
 		return processedBy;
+	}
+	
+	public void setCOEMatrix(RealMatrix matrix){
+		this.coe_matrix = matrix;
+	}
+	
+	public RealMatrix getCOEMatrix(){
+		return coe_matrix;
+	}
+	
+	public void setEntropy(double entropy){
+		this.entropy = entropy;
+	}
+	
+	public double getEntropy(){
+		return entropy;
 	}
 	
 	/**

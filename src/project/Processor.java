@@ -1,11 +1,16 @@
 package project;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import model.modeling.message;
 import project.entities.HashtagTweetLists;
 import project.entities.StatisticsEntity;
 import twitter.types.Hashtag;
 import twitter.types.Tweet;
 import view.modeling.ViewableAtomic;
+
+import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 
 public class Processor extends ViewableAtomic{
@@ -50,6 +55,8 @@ public class Processor extends ViewableAtomic{
 					if(phaseIs(PASSIVE)){
 						holdIn(BUSY, observation_time);
 						process();
+						coe_matrix();
+						entropy();
 					}
 					//observation time can be calculated based on the input data e.g: number of hashtags
 				}
@@ -95,6 +102,54 @@ public class Processor extends ViewableAtomic{
 		}
 
 		stat.setTop_tweeted(top_h);
+	}
+	
+	private void entropy(){
+		int nOfH = stat.getHashtags().size();
+		double P[] = new double[nOfH];
+		int total = 0;
+		
+		for(Hashtag h: stat.getHashtags().keySet())
+			total += stat.getHashtags().get(h);
+		
+		int i=0;
+		for(Hashtag h: stat.getHashtags().keySet())
+			P[i] = (double) stat.getHashtags().get(h) / total;
+		
+		double entropy = 0;
+		for(int j=0; j< nOfH; j++)
+			entropy += P[j]*Math.log(P[j]);
+		
+		stat.setEntropy(entropy*-1);
+	}
+
+	private void coe_matrix(){
+		PearsonsCorrelation PC = new PearsonsCorrelation();
+		int noOfH = stat.getHashtags().size();
+		double data[][] = new double[60][noOfH];
+		
+		for(int i=0; i<60; i++)
+			for(int k=0; k<noOfH; k++)
+				data[i][k] = 0;
+
+		for (Tweet tweet: ht.getTweets()){
+			int i = 0;
+			for (Hashtag hashtag : stat.getHashtags().keySet()) {
+				if(tweet.getHashtags().contains(hashtag))
+					data[((int) tweet.getTime()) % 60][i++] ++;
+				
+			}
+		}
+		
+		System.out.println("COEF DATA MATRIX:");
+		for(int i=0; i<60; i++){
+			for(int k=0; k<noOfH; k++)
+				System.out.print(data[i][k] + " ");
+			System.out.print("\n");
+		}
+		
+		stat.setCOEMatrix(PC.computeCorrelationMatrix(data));
+		System.out.println("COEF MATRIX:\n"+stat.getCOEMatrix());
 	}
 
 	public message out(){

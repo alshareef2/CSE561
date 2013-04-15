@@ -15,7 +15,7 @@ public class Transducer extends ViewableAtomic{
 	public static final String PASSIVE = "passive";
 	public static final String OBSERVE = "observing";
 	public static final String SEND = "sending";
-	public static final String SEND2 = "sendingAnd";
+	public static final String SEND2 = "sendJobAndStats";
 	HashtagTweetLists ht;
 	double time_left_P1, time_left_P2, time_left_P3;
 	StatisticsEntity stat = new StatisticsEntity();
