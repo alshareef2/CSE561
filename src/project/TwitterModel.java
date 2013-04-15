@@ -5,6 +5,8 @@ import java.awt.Point;
 
 import GenCol.entity;
 
+import project.entities.ExtremeTopicCommand;
+
 import view.modeling.ViewableAtomic;
 import view.modeling.ViewableComponent;
 import view.modeling.ViewableDigraph;
@@ -44,18 +46,20 @@ public class TwitterModel extends ViewableDigraph {
 		addCoupling(tr, "send_lists_P3", p3, "lists");
 		addCoupling(p3, "stat", tr, "solved");
 		
+    //code to allow the user to FORCE returning the stats.
 		addInport("putStatsNow");
     addTestInput("putStatsNow", new entity("Getstats"));
+    addCoupling(this, "putStatsNow", tm, TweetCreator.IN_RETURNSTATSNOW);
 
-    addCoupling(this, "putTweetNow", tm, TweetCreator.IN_RETURNSTATSNOW);
-
+    //code to start the experiment.
     addInport("startExp");
     addTestInput("startExp", new entity("Start"));
-
     addCoupling(this, "startExp", g, RealisticTweetG.IN_START);
 		
+    //add some test extreme topics
     addInport("extremeTopic");
     addCoupling(this, "extremeTopic", tm, TweetCreator.IN_EXTREMETOPIC);
+    addTestInput("extremeTopic", new ExtremeTopicCommand("1", 3.0));
 		
 		addCoupling(g, TweetG.OUT_SETTINGS, tm, TweetCreator.IN_CONFIG);
 		addCoupling(g, TweetG.OUT_TWTCMD, tm, TweetCreator.IN_TWEETCOMMAND);
