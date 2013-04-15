@@ -10,7 +10,7 @@ import twitter.types.Tweet;
 import GenCol.entity;
 
 public class StatisticsEntity extends entity{
-
+	private String processedBy;
 	private Hashtag top_tweeted;
 	private Tweet top_retweeted;
 	private Map<Hashtag, Integer> hashtags = new HashMap<Hashtag, Integer>();
@@ -19,6 +19,14 @@ public class StatisticsEntity extends entity{
 		super("STATS!");
 	}
 
+	public void setProcessedBy(String processedBy){
+		this.processedBy = processedBy;
+	}
+	
+	public String getProcessedBy(){
+		return processedBy;
+	}
+	
 	/**
 	 * @return the top_tweeted
 	 */

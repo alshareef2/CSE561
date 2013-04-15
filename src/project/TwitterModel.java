@@ -5,7 +5,6 @@ import java.awt.Point;
 
 import GenCol.entity;
 
-import twitter.debug.Transducer;
 import view.modeling.ViewableAtomic;
 import view.modeling.ViewableComponent;
 import view.modeling.ViewableDigraph;
@@ -25,9 +24,25 @@ public class TwitterModel extends ViewableDigraph {
 		ViewableAtomic tm = new TweetCreator();
 		ViewableAtomic tr = new Transducer();
 		
+		ViewableAtomic p1 = new Processor("P1",10);
+		ViewableAtomic p2 = new Processor("P2",10);
+		ViewableAtomic p3 = new Processor("P3",10);
+		
 		add(g);
 		add(tm);
 		add(tr);
+		
+		add(p1);
+		add(p2);
+		add(p3);
+		
+		//processor coupling 
+		addCoupling(tr, "send_lists_P1", p1, "lists");
+		addCoupling(p1, "stat", tr, "solved");
+		addCoupling(tr, "send_lists_P2", p2, "lists");
+		addCoupling(p2, "stat", tr, "solved");
+		addCoupling(tr, "send_lists_P3", p3, "lists");
+		addCoupling(p3, "stat", tr, "solved");
 		
 		addInport("putTweetNow");
 		addTestInput("putTweetNow", new entity("Getstats"));
@@ -49,9 +64,12 @@ public class TwitterModel extends ViewableDigraph {
      */
     public void layoutForSimView()
     {
-        preferredSize = new Dimension(591, 332);
-        ((ViewableComponent)withName("Real Tweet Gen")).setPreferredLocation(new Point(21, 26));
-        ((ViewableComponent)withName("TweetCreator")).setPreferredLocation(new Point(93, 114));
-        ((ViewableComponent)withName("Tansducer")).setPreferredLocation(new Point(199, 250));
+        preferredSize = new Dimension(696, 391);
+        ((ViewableComponent)withName("Real Tweet Gen")).setPreferredLocation(new Point(8, 25));
+        ((ViewableComponent)withName("P1")).setPreferredLocation(new Point(11, 272));
+        ((ViewableComponent)withName("P2")).setPreferredLocation(new Point(162, 288));
+        ((ViewableComponent)withName("Tansducer")).setPreferredLocation(new Point(216, 172));
+        ((ViewableComponent)withName("TweetCreator")).setPreferredLocation(new Point(131, 91));
+        ((ViewableComponent)withName("P3")).setPreferredLocation(new Point(313, 303));
     }
 }
