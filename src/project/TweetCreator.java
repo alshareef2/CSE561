@@ -141,6 +141,9 @@ public class TweetCreator extends ViewableAtomic{
 
     if(extremeTopic != null){
       extremeTopic.elapse(e);
+      if(extremeTopic.getDuration() <= 0.0){
+        extremeTopic = null;
+      }
     }
     
     //if we get a new network info, then we will change the sate
@@ -165,7 +168,7 @@ public class TweetCreator extends ViewableAtomic{
       if(messageOnPort(x, IN_EXTREMETOPIC, i)){
         try{
           ExtremeTopicCommand tmp = (ExtremeTopicCommand)x.getValOnPort(IN_EXTREMETOPIC, i);
-          
+          extremeTopic = tmp;
         }
         catch(ClassCastException cce){
           System.out.println("Improper message on " + IN_CONFIG);

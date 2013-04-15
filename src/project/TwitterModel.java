@@ -44,8 +44,8 @@ public class TwitterModel extends ViewableDigraph {
 		addCoupling(tr, "send_lists_P3", p3, "lists");
 		addCoupling(p3, "stat", tr, "solved");
 		
-		addInport("putTweetNow");
-    addTestInput("putTweetNow", new entity("Getstats"));
+		addInport("putStatsNow");
+    addTestInput("putStatsNow", new entity("Getstats"));
 
     addCoupling(this, "putTweetNow", tm, TweetCreator.IN_RETURNSTATSNOW);
 
@@ -54,13 +54,15 @@ public class TwitterModel extends ViewableDigraph {
 
     addCoupling(this, "startExp", g, RealisticTweetG.IN_START);
 		
+    addInport("extremeTopic");
+    addCoupling(this, "extremeTopic", tm, TweetCreator.IN_EXTREMETOPIC);
 		
 		addCoupling(g, TweetG.OUT_SETTINGS, tm, TweetCreator.IN_CONFIG);
 		addCoupling(g, TweetG.OUT_TWTCMD, tm, TweetCreator.IN_TWEETCOMMAND);
 		
-//		addCoupling(tm, TweetCreator.OUT_TWEET, this, "OUT_TWEET");
 		addCoupling(tm, TweetCreator.OUT_TWEET, tr, "lists");
 		addCoupling(tr, "stat", this, "OUT");
+
 	}
 
 	
