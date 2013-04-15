@@ -6,6 +6,8 @@ import java.util.Random;
 
 import project.util.ZipfGenerator;
 
+import GenCol.entity;
+
 import model.modeling.content;
 import model.modeling.message;
 
@@ -27,6 +29,9 @@ public class RealisticTweetG extends ViewableAtomic {
   private static final int NUM_USERS = 3;
   private static final int NUM_FRIENDS = 2;
   
+  //input ports
+  public static final String IN_START = "Start Exp.";
+
   //output ports
   public static final String OUT_SETTINGS = "Settings";
   public static final String OUT_TWTCMD = "Tweet Commands";
@@ -49,17 +54,18 @@ public class RealisticTweetG extends ViewableAtomic {
     addOutport(OUT_SETTINGS);
     addOutport(OUT_TWTCMD);
 
+    addInport(IN_START);
+    addTestInput(IN_START, new entity("Start"));
+
     rng = new Random();
     zg = new ZipfGenerator(NUM_USERS, 1.);
   }
   
   public void initialize(){
-    System.out.println("HERE 5");
-    holdIn(STATE_GENERATINGSETTINGS, 0);
+    passivate();
   }
   
   public message out(){
-    System.out.println("HERE 6");
     message m = new message();
     content c = null;
     double averageTweetsPerSecond = 2.0;
@@ -140,6 +146,21 @@ public class RealisticTweetG extends ViewableAtomic {
     return m;
   }
   
+  public void deltext(double e, message x){
+    Continue(e);
+
+    for(int i = 0; i < x.getLength(); i++){
+      if(messageOnPort(x, IN_START, i)){
+        try{
+          holdIn(STATE_GENERATINGSETTINGS, 0);
+        }
+        catch(ClassCastException cce){
+          System.out.println("Improper message on " + IN_START);
+        }
+      }
+    }
+  }
+
   public void deltint(){
     holdIn(STATE_PRODUCING_TWEET_CMDS, ourSendtimeInterval);
   }

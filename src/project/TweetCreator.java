@@ -203,17 +203,26 @@ public class TweetCreator extends ViewableAtomic{
   public message out(){
     message m = new message();
     
+    boolean forcedReturnPhase = phaseIs(STATE_RETURNSTATS);
+
     List<Hashtag> tagsTweeted = new ArrayList<Hashtag>();
     List<Tweet> tweetsTweeted = new ArrayList<Tweet>();
     for(int i = tweetsProduced.size() - 1; i >= 0; i--){
-      Tweet t = tweetsProduced.remove(i);
+      Tweet t;
+      if(forcedReturnPhase){
+        t = tweetsProduced.get(i);
+      }
+      else{
+        t = tweetsProduced.remove(i); 
+      }
+       
       tweetsTweeted.add(t);
       System.out.println("Sending: " + t);
       if(t != null && t.getHashtags() != null){
         tagsTweeted.addAll(t.getHashtags());  
       }
     }
-    content c = makeContent(OUT_TWEET, new HashtagTweetLists(tagsTweeted, tweetsTweeted, phaseIs(STATE_RETURNSTATS)));
+    content c = makeContent(OUT_TWEET, new HashtagTweetLists(tagsTweeted, tweetsTweeted, forcedReturnPhase));
     m.add(c);
     tweetsProduced.clear();
 
