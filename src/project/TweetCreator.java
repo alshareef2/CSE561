@@ -90,9 +90,6 @@ public class TweetCreator extends ViewableAtomic{
       if(retweetedTweet != null){
         tweetsProduced.add(retweetedTweet); 
       }
-      else{
-        System.out.println("RETWEET FAILED");
-      }
       break;
     case TWEET:
       List<Hashtag> tagsToTweet;
@@ -107,6 +104,7 @@ public class TweetCreator extends ViewableAtomic{
       tweetsProduced.add(tweetedTweet);
       //if one of the tags is in the the extreme topic, tweet twice.
       if(extremeTopic != null && extremeTopic.getDuration() > 0.0){
+        System.out.println("EXTREME TWEET!!!!");
         boolean shouldTweetAgain = false;
         for(Hashtag tag : tagsToTweet){
           if(tag.getTopic().equals(extremeTopic.getTopic())){

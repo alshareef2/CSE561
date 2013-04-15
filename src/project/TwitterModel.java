@@ -59,7 +59,7 @@ public class TwitterModel extends ViewableDigraph {
     //add some test extreme topics
     addInport("extremeTopic");
     addCoupling(this, "extremeTopic", tm, TweetCreator.IN_EXTREMETOPIC);
-    addTestInput("extremeTopic", new ExtremeTopicCommand("1", 3.0));
+    addTestInput("extremeTopic", new ExtremeTopicCommand("1", 30.0));
 		
 		addCoupling(g, TweetG.OUT_SETTINGS, tm, TweetCreator.IN_CONFIG);
 		addCoupling(g, TweetG.OUT_TWTCMD, tm, TweetCreator.IN_TWEETCOMMAND);
