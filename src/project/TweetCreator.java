@@ -56,9 +56,6 @@ public class TweetCreator extends ViewableAtomic{
     super(name);
     
     rng = new Random();
-    tweetsProduced = new ArrayList<Tweet>();
-    nextTweetID = 0;
-    twitterTime = 0;
     
     //add the ports
     addInport(IN_CONFIG);
@@ -71,6 +68,10 @@ public class TweetCreator extends ViewableAtomic{
   public void initialize(){
     phase = STATE_NOTHING;
     sigma = INFINITY;
+
+    tweetsProduced = new ArrayList<Tweet>();
+    nextTweetID = 0;
+    twitterTime = 0;
   }
   
   private void processTweetCommand(TweetCommandEntity command){
@@ -136,7 +137,7 @@ public class TweetCreator extends ViewableAtomic{
   
   public void deltext(double e, message x){
     Continue(e);
-    // twitterTime += e;
+    twitterTime += e;
 
     if(extremeTopic != null){
       extremeTopic.elapse(e);
@@ -233,11 +234,9 @@ public class TweetCreator extends ViewableAtomic{
           tweetsProduced.add(u.retweet(nextTweetID++, twitterTime));
         }
       }
-      twitterTime++;
     }
     else if(phaseIs(STATE_INTERCEPTED)){
       holdIn(STATE_TIMETOTWEET, this.howOftenToTweet);
-      twitterTime++;  
     }
     else if(phaseIs(STATE_RETURNSTATS)){
       holdIn(STATE_TIMETOTWEET, timeLeft);
