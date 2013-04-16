@@ -134,7 +134,7 @@ public class TweetCreator extends ViewableAtomic{
 
       //see if we should evolve a new tag
       if(rng.nextDouble() < probEvolve){
-        Hashtag newTag = new Hashtag(tagsInPlay.size(), "#iDontKnow", tag.getTopic());
+        Hashtag newTag = new Hashtag(tagsInPlay.size(), tag.getText() + "PRIME", tag.getTopic());
         tag.addToNext(newTag);
         newTag.addToPrev(tag);
 
