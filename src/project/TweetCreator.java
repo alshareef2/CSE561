@@ -38,6 +38,7 @@ public class TweetCreator extends ViewableAtomic{
   private long nextTweetID;
   private long twitterTime;
   private double timeLeft;
+  private double probEvolve;
   
   //input ports
   public static final String IN_CONFIG = "config";
@@ -72,6 +73,7 @@ public class TweetCreator extends ViewableAtomic{
     tweetsProduced = new ArrayList<Tweet>();
     nextTweetID = 0;
     twitterTime = 0;
+    probEvolve = 0.01;
   }
   
   private void processTweetCommand(TweetCommandEntity command){
@@ -128,7 +130,21 @@ public class TweetCreator extends ViewableAtomic{
   private List<Hashtag> getHashtagsToTweet(int size){
     List<Hashtag> tagsToTweet = new ArrayList<Hashtag>();
     while(size-- > 0){
-      tagsToTweet.add(tagsInPlay.get(rng.nextInt(tagsInPlay.size())));  
+      //choose a tag
+      Hashtag tag = tagsInPlay.get(rng.nextInt(tagsInPlay.size()));
+
+      //see if we should evolve a new tag
+      if(rng.nextDouble() < probEvolve){
+        Hashtag newTag = new Hashtag(tagsInPlay.size(), "#iDontKnow", tag.getTopic());
+        tag.addToNext(newTag);
+        newTag.addToPrev(tag);
+
+        tagsInPlay.add(newTag);
+        tagsToTweet.add(newTag);
+      }
+      else{
+        tagsToTweet.add(tag);  
+      }
     }
     return tagsToTweet;
   }
