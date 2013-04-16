@@ -75,6 +75,7 @@ public class RealisticTweetG extends ViewableAtomic {
     if(phaseIs(STATE_GENERATINGSETTINGS)){
       TwitterInitEntity tie = new TwitterInitEntity();
       StylizedGraph net = new WattsStrogatz(NUM_USERS, NUM_FRIENDS, .6);
+      //Abdul, I got rid of this. I hope it fixes your error!! - Fred
 
       //set up the hashtags
       List<Hashtag> hashtags = new ArrayList<Hashtag>();
