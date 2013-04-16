@@ -26,7 +26,6 @@ public class TweetCreator extends ViewableAtomic{
   public static final String STATE_RETURNSTATS = "forceReturnStats";
   
   //instance data
-  private StylizedGraph network;
   private List<User> users;
   private List<Hashtag> tagsInPlay;
   private List<Tweet> tweetsProduced;
@@ -85,8 +84,8 @@ public class TweetCreator extends ViewableAtomic{
       //if the retweet user is not null, then we HAVE to retweet this guy
       User userToRetweet = command.getUserToRetweet();
       if(userToRetweet == null){
-        List<Integer> friends = network.getUsersFriends(actionUser.getUserID());
-        userToRetweet = users.get(friends.get(rng.nextInt(friends.size())));
+        List<User> friends = actionUser.getFollowing();
+        userToRetweet = friends.get(rng.nextInt(friends.size()));
       }
       Tweet retweetedTweet = actionUser.retweet(nextTweetID++, twitterTime);
       if(retweetedTweet != null){
@@ -165,7 +164,6 @@ public class TweetCreator extends ViewableAtomic{
       if(messageOnPort(x, IN_CONFIG, i)){
         try{
           TwitterInitEntity tmp = (TwitterInitEntity)x.getValOnPort(IN_CONFIG, i);
-          this.network = tmp.getNetwork();
           this.howOftenToTweet = tmp.getTimeToAction();
           this.users = tmp.getUsers();
           this.tagsInPlay = tmp.getHashtags();

@@ -10,7 +10,6 @@ import GenCol.entity;
 
 public class TwitterInitEntity extends entity {
 
-  private StylizedGraph network;
   private List<User> users;
   private List<Hashtag> hashtags;
   private double timeToAction;
@@ -20,12 +19,6 @@ public class TwitterInitEntity extends entity {
   }
   public void setHashtags(List<Hashtag> hashtags) {
     this.hashtags = hashtags;
-  }
-  public StylizedGraph getNetwork() {
-    return network;
-  }
-  public void setNetwork(StylizedGraph network) {
-    this.network = network;
   }
   public double getTimeToAction() {
     return timeToAction;
