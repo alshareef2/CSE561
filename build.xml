@@ -28,6 +28,7 @@
      <target name="run" depends="compile">
       <java dir="${build}" fork="true" classname="controller.Controller">
         <classpath refid="master-classpath" /> 
+        <jvmarg line="-Xmx2048m" />
       </java> 
      </target>
 
