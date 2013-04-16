@@ -46,7 +46,6 @@ public class TweetG extends ViewableAtomic {
 		
 		if(phaseIs(STATE_GENERATINGSETTINGS)){
 			TwitterInitEntity tie = new TwitterInitEntity();
-			tie.setNetwork(new WattsStrogatz(10, 3, .6));
 
 			//set up the hashtags
 			List<Hashtag> hashtags = new ArrayList<Hashtag>();
