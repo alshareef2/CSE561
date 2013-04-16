@@ -3,7 +3,7 @@ package twitter.graphs.stylized;
 import java.util.ArrayList;
 import java.util.List;
 
-import Jama.Matrix;
+import util.Matrix;
 
 public class WattsStrogatz implements StylizedGraph{
 	private Matrix m;
