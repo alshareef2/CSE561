@@ -22,6 +22,9 @@ public class Hashtag {
 		this.hashtagID = hashtagID;
 		this.text = text;
 		this.topic = topic;
+		prev = new LinkedList<Hashtag>();
+		next = new LinkedList<Hashtag>();
+		tweets = new LinkedList<Tweet>();
 	}
 	
 	/**
@@ -79,6 +82,10 @@ public class Hashtag {
 		this.prev = prev;
 	}
 
+	public void addToPrev(Hashtag newTag){
+		prev.add(newTag);
+	}
+
 	/**
 	 * @return the next
 	 */
@@ -91,6 +98,10 @@ public class Hashtag {
 	 */
 	public void setNext(List<Hashtag> next) {
 		this.next = next;
+	}
+
+	public void addToNext(Hashtag newTag){
+		next.add(newTag);
 	}
 
 	/**

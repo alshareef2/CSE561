@@ -26,7 +26,6 @@ public class TweetCreator extends ViewableAtomic{
   public static final String STATE_RETURNSTATS = "forceReturnStats";
   
   //instance data
-  private StylizedGraph network;
   private List<User> users;
   private List<Hashtag> tagsInPlay;
   private List<Tweet> tweetsProduced;
@@ -38,6 +37,7 @@ public class TweetCreator extends ViewableAtomic{
   private long nextTweetID;
   private long twitterTime;
   private double timeLeft;
+  private double probEvolve;
   
   //input ports
   public static final String IN_CONFIG = "config";
@@ -72,6 +72,7 @@ public class TweetCreator extends ViewableAtomic{
     tweetsProduced = new ArrayList<Tweet>();
     nextTweetID = 0;
     twitterTime = 0;
+    probEvolve = 0.01;
   }
   
   private void processTweetCommand(TweetCommandEntity command){
@@ -83,15 +84,12 @@ public class TweetCreator extends ViewableAtomic{
       //if the retweet user is not null, then we HAVE to retweet this guy
       User userToRetweet = command.getUserToRetweet();
       if(userToRetweet == null){
-        List<Integer> friends = network.getUsersFriends(actionUser.getUserID());
-        userToRetweet = users.get(friends.get(rng.nextInt(friends.size())));
+        List<User> friends = actionUser.getFollowing();
+        userToRetweet = friends.get(rng.nextInt(friends.size()));
       }
       Tweet retweetedTweet = actionUser.retweet(nextTweetID++, twitterTime);
       if(retweetedTweet != null){
         tweetsProduced.add(retweetedTweet); 
-      }
-      else{
-        System.out.println("RETWEET FAILED");
       }
       break;
     case TWEET:
@@ -107,6 +105,7 @@ public class TweetCreator extends ViewableAtomic{
       tweetsProduced.add(tweetedTweet);
       //if one of the tags is in the the extreme topic, tweet twice.
       if(extremeTopic != null && extremeTopic.getDuration() > 0.0){
+        System.out.println("EXTREME TWEET!!!!");
         boolean shouldTweetAgain = false;
         for(Hashtag tag : tagsToTweet){
           if(tag.getTopic().equals(extremeTopic.getTopic())){
@@ -130,7 +129,21 @@ public class TweetCreator extends ViewableAtomic{
   private List<Hashtag> getHashtagsToTweet(int size){
     List<Hashtag> tagsToTweet = new ArrayList<Hashtag>();
     while(size-- > 0){
-      tagsToTweet.add(tagsInPlay.get(rng.nextInt(tagsInPlay.size())));  
+      //choose a tag
+      Hashtag tag = tagsInPlay.get(rng.nextInt(tagsInPlay.size()));
+
+      //see if we should evolve a new tag
+      if(rng.nextDouble() < probEvolve){
+        Hashtag newTag = new Hashtag(tagsInPlay.size(), tag.getText() + "PRIME", tag.getTopic());
+        tag.addToNext(newTag);
+        newTag.addToPrev(tag);
+
+        tagsInPlay.add(newTag);
+        tagsToTweet.add(newTag);
+      }
+      else{
+        tagsToTweet.add(tag);  
+      }
     }
     return tagsToTweet;
   }
@@ -141,6 +154,9 @@ public class TweetCreator extends ViewableAtomic{
 
     if(extremeTopic != null){
       extremeTopic.elapse(e);
+      if(extremeTopic.getDuration() <= 0.0){
+        extremeTopic = null;
+      }
     }
     
     //if we get a new network info, then we will change the sate
@@ -148,7 +164,6 @@ public class TweetCreator extends ViewableAtomic{
       if(messageOnPort(x, IN_CONFIG, i)){
         try{
           TwitterInitEntity tmp = (TwitterInitEntity)x.getValOnPort(IN_CONFIG, i);
-          this.network = tmp.getNetwork();
           this.howOftenToTweet = tmp.getTimeToAction();
           this.users = tmp.getUsers();
           this.tagsInPlay = tmp.getHashtags();
@@ -165,7 +180,7 @@ public class TweetCreator extends ViewableAtomic{
       if(messageOnPort(x, IN_EXTREMETOPIC, i)){
         try{
           ExtremeTopicCommand tmp = (ExtremeTopicCommand)x.getValOnPort(IN_EXTREMETOPIC, i);
-          
+          extremeTopic = tmp;
         }
         catch(ClassCastException cce){
           System.out.println("Improper message on " + IN_CONFIG);

@@ -24,10 +24,10 @@ public class RealisticTweetG extends ViewableAtomic {
   private static final String STATE_PRODUCING_TWEET_CMDS = "SendTweets";
 
   //random things
-  // private static final int NUM_USERS = 1000;
-  // private static final int NUM_FRIENDS = 130;
-  private static final int NUM_USERS = 3;
-  private static final int NUM_FRIENDS = 2;
+  private static final int NUM_USERS = 10000;
+  private static final int NUM_FRIENDS = 130;
+  // private static final int NUM_USERS = 3;
+  // private static final int NUM_FRIENDS = 2;
   
   //input ports
   public static final String IN_START = "Start Exp.";
@@ -75,7 +75,6 @@ public class RealisticTweetG extends ViewableAtomic {
     if(phaseIs(STATE_GENERATINGSETTINGS)){
       TwitterInitEntity tie = new TwitterInitEntity();
       StylizedGraph net = new WattsStrogatz(NUM_USERS, NUM_FRIENDS, .6);
-      tie.setNetwork(net);
 
       //set up the hashtags
       List<Hashtag> hashtags = new ArrayList<Hashtag>();

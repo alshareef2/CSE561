@@ -8,8 +8,7 @@ public class ExtremeTopicCommand extends entity{
   private double duration;
 
   public ExtremeTopicCommand(){
-    topic = "";
-    duration = 0.0;
+    this("", 0.0);
   }
 
   public ExtremeTopicCommand(String topic, double duration){
