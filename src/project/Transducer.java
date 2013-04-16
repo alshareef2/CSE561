@@ -9,6 +9,7 @@ import model.modeling.message;
 import view.modeling.ViewableAtomic;
 
 // Transd comment test
+// transd commit test
 public class Transducer extends ViewableAtomic{
 
 	double observation_time;
