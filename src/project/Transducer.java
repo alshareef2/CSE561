@@ -25,7 +25,7 @@ public class Transducer extends ViewableAtomic{
 	Queue<HashtagTweetLists> waiting_lists = new LinkedList<HashtagTweetLists>();
 
 	public Transducer(){
-		super("Tansducer");
+		super("Transducer");
 		observation_time = 10;
 		addInport("lists");
 		addInport("solved");
