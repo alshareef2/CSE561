@@ -8,22 +8,34 @@ public class CorrelationMatrix{
   * This is the parameter that contains the timeseries for each entity.
   */
   public static Matrix makeCorrelationMatrix(double[][] timeseries){
-    Matrix m = new Matrix(timeseries.length, timeseries.length);
+    Matrix m = new Matrix(timeseries[0].length, timeseries[0].length);
 
     //set diagonal to 1.
-    for(int i = 0; i < m.getRowDimension(); i++){
+    for(int i = 0; i < m.getColumnDimension(); i++){
       m.set(i,i,1.0);
     }
 
-    for(int i = 0; i < m.getRowDimension(); i++){
-      for(int j = i + 1; i < m.getRowDimension(); j++){
-        double correl = calcCorrelation(timeseries[i], timeseries[j]);
+    for(int i = 0; i < m.getColumnDimension(); i++){
+      for(int j = i + 1; j < m.getColumnDimension(); j++){
+        double correl = calcCorrelation(
+          getColumn(timeseries, i),
+          getColumn(timeseries, j)
+        );
         m.set(i, j, correl);
         m.set(j, i, correl);
       }
     }
 
     return m;
+  }
+
+  private static double[] getColumn(double[][] mtx, int idx){
+    double[] col = new double[mtx.length];
+
+    for(int i = 0; i < mtx.length; i++){
+      col[i] = mtx[i][idx];
+    }
+    return col;
   }
 
   private static double calcCorrelation(double[] ts1, double[] ts2){
