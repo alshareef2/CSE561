@@ -6,7 +6,9 @@ import project.entities.StatisticsEntity;
 import twitter.types.Hashtag;
 import twitter.types.Tweet;
 import view.modeling.ViewableAtomic;
-import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+
+import util.CorrelationMatrix;
+import util.Matrix;
 
 public class Processor extends ViewableAtomic{
 
@@ -119,7 +121,6 @@ public class Processor extends ViewableAtomic{
 	}
 
 	private void coe_matrix(){
-		PearsonsCorrelation PC = new PearsonsCorrelation();
 		int noOfH = stat.getHashtags().size();
 		double data[][] = new double[60][noOfH];
 		
@@ -142,8 +143,10 @@ public class Processor extends ViewableAtomic{
 				System.out.print(data[i][k] + " ");
 			System.out.print("\n");
 		}
+
+		Matrix m = CorrelationMatrix.makeCorrelationMatrix(data);
+		stat.setCOEMatrix(m);
 		
-		stat.setCOEMatrix(PC.computeCorrelationMatrix(data));
 		System.out.println("COEF MATRIX:\n"+stat.getCOEMatrix());
 	}
 
