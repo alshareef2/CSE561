@@ -1,3 +1,5 @@
+.DS_Store
+src/project/.DS_Store
 src/.DS_Store
 src/controller/.DS_Store
 src/facade/.DS_Store
