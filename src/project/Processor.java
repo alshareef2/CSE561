@@ -160,6 +160,8 @@ public class Processor extends ViewableAtomic{
 			stat.setProcessedBy(pName);
 			m.add(makeContent("stat", stat));
 		}
+		
+		addModel(new Processor("P4",10));
 		return m;
 	}
 }

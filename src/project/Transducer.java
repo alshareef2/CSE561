@@ -3,6 +3,10 @@ package project;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import GenService.ServiceClient;
+
+import dsoadExample.VoiceCommunicationSystem;
+
 import project.entities.HashtagTweetLists;
 import project.entities.StatisticsEntity;
 import model.modeling.message;
@@ -147,4 +151,36 @@ public class Transducer extends ViewableAtomic{
 		}
 		return m;
 	}
+
+	private void addProcessor(double duration){
+		TwitterModel parent = (TwitterModel) getParent();
+		//	 exLog.append(parent.getSimulator().getTL()+","+"client"+parent.subCount+","+"created"+"\n");
+		Processor proc = parent.addProcessor(duration);
+		addModel(proc);
+
+		// subcscriber to router
+		//addCoupling(proc.getName(),"request",parent.router.getName(),"in");
+		//addOutport(parent.router.getName(),proc.getName());
+		//addCoupling(parent.router.getName(),proc.getName(),proc.getName(),"service");
+
+		// subcscriber to broker
+		//addCoupling(parent.broker.getName(),proc.getName(),proc.getName(),"found");
+		//addOutport(parent.broker.getName(),proc.getName());
+		//addCoupling(proc.getName(),"lookup",parent.broker.getName(),"subscribe");
+
+	}
+
+	private void removeProcessor(){
+		TwitterModel parent = (TwitterModel) getParent();
+
+		/*
+			 removeCoupling("service1","out","modelExecutor","add");
+			 removeCoupling("service2","out","modelExecutor","remove");
+			 removeOutport("service1","out");
+			 removeOutport("service2","out");
+		 */
+
+		removeModel("Subscriber2");
+	}
+
 }

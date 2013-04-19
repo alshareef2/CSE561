@@ -13,6 +13,7 @@ public class HashtagTweetLists extends entity{
 	private List<Hashtag> hashtags = new LinkedList<Hashtag>();
 	private List<Tweet> tweets = new LinkedList<Tweet>();
 	private boolean isForced;
+	private String assignTo;
 	
 	public HashtagTweetLists(){
 		
@@ -24,6 +25,14 @@ public class HashtagTweetLists extends entity{
 		this.isForced = isForced;
 	}
 
+	public void setAssignTo(String assignTo){
+		this.assignTo = assignTo;
+	}
+	
+	public String getAssignTo(){
+		return assignTo;
+	}
+	
 	public void setIsForced(boolean isForced){
 		this.isForced = isForced;
 	}
