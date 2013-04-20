@@ -22,7 +22,6 @@ public class Transducer extends ViewableAtomic{
 	public static final String SEND = "sending";
 	public static final String SEND2 = "sendJobAndStats";
 	HashtagTweetLists ht;
-	double time_left_P1, time_left_P2, time_left_P3;
 	StatisticsEntity stat = new StatisticsEntity();
 	boolean P1, P2, P3;
 	int sendTo;
@@ -56,9 +55,6 @@ public class Transducer extends ViewableAtomic{
 	}
 
 	public void  deltext(double e,message x){
-		time_left_P1 = sigma - e;
-		time_left_P2 = sigma - e;
-		time_left_P3 = sigma - e;
 		Continue(e);
 		ht = null;
 
