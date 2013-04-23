@@ -16,7 +16,6 @@ public class DTransd extends ViewableAtomic{
 	public static final String SEND2 = "sendJobAndStats";
 	HashtagTweetLists ht;
 	StatisticsEntity stat = new StatisticsEntity();
-	boolean P1, P2, P3;
 	int sendTo, num_of_proc = 0 , max_proc = 3;
 	int proc_counter = 0;
 	Queue<HashtagTweetLists> waiting_lists = new LinkedList<HashtagTweetLists>();
@@ -38,7 +37,6 @@ public class DTransd extends ViewableAtomic{
 	}
 
 	public void initialize(){
-		P1 = P2 = P3 = true;
 		waiting_lists.clear();
 		num_of_proc = 0;
 		proc_counter = 0;

@@ -130,10 +130,18 @@ public class Processor extends ViewableAtomic{
 				data[i][k] = 0;
 
 		for (Tweet tweet: ht.getTweets()){
+			
+			//System.out.print(tweet.getTweetID() +", NofH: "+ tweet.getHashtags().size() + " H# : ");
+			//for(Hashtag hashtag : tweet.getHashtags()){
+				//System.out.print(hashtag.getText() + ", ");
+			//}
+			//System.out.println("..");
+			
 			int i = 0;
 			for (Hashtag hashtag : stat.getHashtags().keySet()) {
 				if(tweet.getHashtags().contains(hashtag))
-					data[((int) tweet.getTime()) % 60][i++] ++;
+					data[((int) tweet.getTime())][i] ++;
+				i++;
 				
 			}
 		}
