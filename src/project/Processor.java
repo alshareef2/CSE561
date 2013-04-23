@@ -114,7 +114,7 @@ public class Processor extends ViewableAtomic{
 		
 		int i=0;
 		for(Hashtag h: stat.getHashtags().keySet())
-			P[i] = (double) stat.getHashtags().get(h) / total;
+			P[i++] = (double) stat.getHashtags().get(h) / total;
 		
 		double entropy = 0;
 		for(int j=0; j< nOfH; j++)
