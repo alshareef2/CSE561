@@ -115,15 +115,12 @@ public class User implements Comparable<User>{
 	public Tweet retweet(long nextTweetID, long tweetTime){
 		//select the tweet to retweet
 		List<Tweet> timeline = createTimeline();
-		System.out.println("I am following " + following.size() + " users.");
-		System.out.println("My timeline is of size: " + timeline.size());
 		
 		ItemSelector<Tweet> findNextTweet = new UniformRandomSelector<Tweet>(timeline); 
 		Tweet toRetweet = findNextTweet.getNextItem();
 		//perform the retweet
 		if(toRetweet != null){
 			toRetweet.incrementNumberOfRT();
-			System.out.println("RETWEET: " + toRetweet.getNumberOfRT());
 			tweets.add(toRetweet);
 		}
 		

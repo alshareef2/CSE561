@@ -13,6 +13,7 @@
 
      <target name="init">  
         <mkdir dir="${build}"/>
+        <mkdir dir="${build}/stats" />
      </target>
 
      <target name="compile" depends="init">           

@@ -125,14 +125,21 @@ public class DTransd extends ViewableAtomic{
 			FileWriter fw;
 			if(first_write){
 				fw = new FileWriter(file.getAbsoluteFile());
-				first_write = false;
+
 			}
-			else
-				fw = new FileWriter(file.getAbsoluteFile(),true);
+			else{
+				fw = new FileWriter(file.getAbsoluteFile(), true);
+			}
+				
 			BufferedWriter bw = new BufferedWriter(fw);
+			if(first_write){
+				bw.append("Time\tEntropy\tNum. Hashtags");
+			}
 			bw.append(content);//.write(content);
 			bw.close();
 
+
+			first_write = false;
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (NullPointerException e){
@@ -151,8 +158,8 @@ public class DTransd extends ViewableAtomic{
 
 		// between transd and proc
 		addCoupling(proc.getName(),"stat",parent.tr.getName(),"solved");
-		addOutport(parent.tr.getName(),"send_lists_"+proc.getName());
-		addCoupling(parent.tr.getName(),"send_lists_"+proc.getName(),proc.getName(),"lists");
+		addOutport(parent.tr.getName(),"send_lists_" + proc.getName());
+		addCoupling(parent.tr.getName(),"send_lists_" + proc.getName(),proc.getName(),"lists");
 
 	}
 

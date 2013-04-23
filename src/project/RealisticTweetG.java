@@ -24,10 +24,10 @@ public class RealisticTweetG extends ViewableAtomic {
   private static final String STATE_PRODUCING_TWEET_CMDS = "SendTweets";
 
   //random things
-  private static final int NUM_USERS = 10000;
-  private static final int NUM_FRIENDS = 130;
-  // private static final int NUM_USERS = 3;
-  // private static final int NUM_FRIENDS = 2;
+  private static int NUM_USERS = 10000;
+  private static int NUM_FRIENDS = 130;
+  public static double averageTweetsPerSecond = 2.0;
+  public static double standardDevTweetsPerSecond = 1.5;
   
   //input ports
   public static final String IN_START = "Start Exp.";
@@ -68,8 +68,6 @@ public class RealisticTweetG extends ViewableAtomic {
   public message out(){
     message m = new message();
     content c = null;
-    double averageTweetsPerSecond = 2.0;
-    double standardDevTweetsPerSecond = 1.5;
 
     
     if(phaseIs(STATE_GENERATINGSETTINGS)){
@@ -152,6 +150,11 @@ public class RealisticTweetG extends ViewableAtomic {
     for(int i = 0; i < x.getLength(); i++){
       if(messageOnPort(x, IN_START, i)){
         try{
+          StartExperiment se = (StartExperiment) x.getValOnPort(IN_START, i);
+          NUM_USERS = se.getNumUsers();
+          NUM_FRIENDS = se.getNumFriends();
+          averageTweetsPerSecond = se.getAvgTweetsPerTimeUnit();
+          standardDevTweetsPerSecond = se.getStdTweetsPerTimeUnit();
           holdIn(STATE_GENERATINGSETTINGS, 0);
         }
         catch(ClassCastException cce){
