@@ -1,7 +1,12 @@
 package project;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
+
 import project.entities.HashtagTweetLists;
 import project.entities.StatisticsEntity;
 import model.modeling.message;
@@ -18,7 +23,9 @@ public class DTransd extends ViewableAtomic{
 	StatisticsEntity stat = new StatisticsEntity();
 	int sendTo, num_of_proc = 0 , max_proc = 3;
 	int proc_counter = 0;
+	int cur_time=60;
 	Queue<HashtagTweetLists> waiting_lists = new LinkedList<HashtagTweetLists>();
+	boolean first_write ;
 
 	public DTransd(){
 		super("DTransd");
@@ -38,6 +45,7 @@ public class DTransd extends ViewableAtomic{
 
 	public void initialize(){
 		waiting_lists.clear();
+		first_write = true;
 		num_of_proc = 0;
 		proc_counter = 0;
 		holdIn(PASSIVE, INFINITY);
@@ -89,6 +97,7 @@ public class DTransd extends ViewableAtomic{
 		message m = new message( );
 		if (phaseIs(OBSERVE)){
 			showState();
+			writeToFile(stat);
 			m.add(makeContent("stat", stat));
 		} else if(phaseIs(SEND)){
 			m.add(makeContent("send_lists_P"+proc_counter, ht));
@@ -97,6 +106,39 @@ public class DTransd extends ViewableAtomic{
 			m.add(makeContent("send_lists_P" + sendTo, ht));
 		}
 		return m;
+	}
+
+	public void writeToFile(StatisticsEntity stat) {
+
+		try {
+
+			System.out.println("WRITING TO THE FILE!");
+
+			String content = cur_time + "\t" + stat.getEntropy() +"\t" + stat.getHashtags().size() +"\n";
+			cur_time += 60;
+			//	File file = new File("/users/mkyong/filename.txt");
+			File file = new File("stats/stats_6000.txt");
+
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			FileWriter fw;
+			if(first_write){
+				fw = new FileWriter(file.getAbsoluteFile());
+				first_write = false;
+			}
+			else
+				fw = new FileWriter(file.getAbsoluteFile(),true);
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.append(content);//.write(content);
+			bw.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e){
+			e.printStackTrace();
+		}
+
 	}
 
 	private void addProcessor(double duration){

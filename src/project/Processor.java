@@ -64,10 +64,12 @@ public class Processor extends ViewableAtomic{
 
 	public void deltint(){
 		//process();
+		
 		holdIn(PASSIVE, INFINITY);
 	}
 
 	private void process() {
+		stat = new StatisticsEntity();
 		for (Hashtag hashtag : ht.getHashtags()) {
 			stat.getHashtags().put(hashtag, 0);
 		}
@@ -119,6 +121,8 @@ public class Processor extends ViewableAtomic{
 			entropy += P[j]*Math.log(P[j]);
 		
 		stat.setEntropy(entropy*-1);
+		
+		//System.out.println("CALCULATED ENTROPY: "+entropy*-1);
 	}
 
 	private void coe_matrix(){
@@ -140,7 +144,7 @@ public class Processor extends ViewableAtomic{
 			int i = 0;
 			for (Hashtag hashtag : stat.getHashtags().keySet()) {
 				if(tweet.getHashtags().contains(hashtag))
-					data[((int) tweet.getTime())][i] ++;
+					data[((int) tweet.getTime()) % 60][i] ++;
 				i++;
 				
 			}
