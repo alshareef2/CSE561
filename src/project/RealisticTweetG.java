@@ -72,6 +72,7 @@ public class RealisticTweetG extends ViewableAtomic {
     
     if(phaseIs(STATE_GENERATINGSETTINGS)){
       TwitterInitEntity tie = new TwitterInitEntity();
+      System.out.println("Generating Settings with: (" + NUM_USERS + ", " + NUM_FRIENDS + ")");
       StylizedGraph net = new WattsStrogatz(NUM_USERS, NUM_FRIENDS, .6);
       //Abdul, I got rid of this. I hope it fixes your error!! - Fred
 

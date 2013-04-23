@@ -133,7 +133,7 @@ public class DTransd extends ViewableAtomic{
 				
 			BufferedWriter bw = new BufferedWriter(fw);
 			if(first_write){
-				bw.append("Time\tEntropy\tNum. Hashtags");
+				bw.append("Time\tEntropy\tNum. Hashtags\n");
 			}
 			bw.append(content);//.write(content);
 			bw.close();
