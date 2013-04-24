@@ -87,6 +87,7 @@ public class TweetCreator extends ViewableAtomic{
     User actionUser = command.getUser();
     //do the thing that is commanded
     TweetCommandType type = command.getCommandType();
+    Tweet tweetedTweet = null;
     switch(type){
     case RETWEET:
       //if the retweet user is not null, then we HAVE to retweet this guy
@@ -95,9 +96,9 @@ public class TweetCreator extends ViewableAtomic{
         List<User> friends = actionUser.getFollowing();
         userToRetweet = friends.get(rng.nextInt(friends.size()));
       }
-      Tweet retweetedTweet = actionUser.retweet(nextTweetID++, twitterTime);
-      if(retweetedTweet != null){
-        tweetsProduced.add(retweetedTweet); 
+      tweetedTweet = actionUser.retweet(nextTweetID++, twitterTime);
+      if(tweetedTweet != null){
+        tweetsProduced.add(tweetedTweet); 
       }
       uniqueUsers.add("" + actionUser.getUserID());
       break;
@@ -109,23 +110,9 @@ public class TweetCreator extends ViewableAtomic{
       else{
         tagsToTweet = getHashtagsToTweet(1);
       }
-      Tweet tweetedTweet = actionUser.tweet(nextTweetID++, twitterTime, tagsToTweet);
+      tweetedTweet = actionUser.tweet(nextTweetID++, twitterTime, tagsToTweet);
       tweetsProduced.add(tweetedTweet);
       //if one of the tags is in the the extreme topic, tweet twice.
-      if(extremeTopic != null && extremeTopic.getDuration() > 0.0){
-        boolean shouldTweetAgain = false;
-        for(Hashtag tag : tagsToTweet){
-          if(tag.getTopic().equals(extremeTopic.getTopic())){
-            shouldTweetAgain = true;
-          }
-        }
-        if(shouldTweetAgain){
-          System.out.println("Tweeting again, baby!!");
-          Tweet anotherTweet = new Tweet(nextTweetID++);
-          tweetedTweet.logicalCopy(anotherTweet);
-          tweetsProduced.add(tweetedTweet);
-        }
-      }
       uniqueUsers.add("" + actionUser.getUserID());
       
       break;
@@ -133,6 +120,22 @@ public class TweetCreator extends ViewableAtomic{
     default:
       break;
     }
+
+    if(tweetedTweet != null && extremeTopic != null){
+      boolean shouldTweetAgain = false;
+      for(Hashtag tag : tweetedTweet.getHashtags()){
+        if(tag.getTopic().equals(extremeTopic.getTopic())){
+          shouldTweetAgain = true;
+        }
+      }
+      if(shouldTweetAgain){
+        System.out.println("RETWEETING EXTREME TWEET!!!!!!");
+        Tweet anotherTweet = new Tweet(nextTweetID++);
+        anotherTweet = tweetedTweet.logicalCopy(anotherTweet);
+        tweetsProduced.add(anotherTweet);
+      }
+    }
+
   }
   
   private List<Hashtag> getHashtagsToTweet(int size){
@@ -160,6 +163,8 @@ public class TweetCreator extends ViewableAtomic{
   public void deltext(double e, message x){
     Continue(e);
     twitterTime += e;
+
+    System.out.println("Twitter time: " + twitterTime);
 
     if(extremeTopic != null){
       extremeTopic.elapse(e);
@@ -244,9 +249,10 @@ public class TweetCreator extends ViewableAtomic{
       tweetsTweeted.add(t);
       System.out.println("Sending: " + t);
       if(t != null && t.getHashtags() != null){
-        tagsTweeted.addAll(t.getHashtags());  
+        tagsTweeted.addAll(t.getHashtags());
       }
     }
+    System.out.println("--- PRINTED " + tagsTweeted.size() + " TAGS ---");
     content c = makeContent(OUT_TWEET, new HashtagTweetLists(tagsTweeted, tweetsTweeted, forcedReturnPhase, uniqueUsers.size()));
     m.add(c);
     tweetsProduced.clear();

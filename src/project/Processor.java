@@ -18,6 +18,7 @@ public class Processor extends ViewableAtomic{
 	double observation_time;
 	public static final String PASSIVE = "passive";
 	public static final String BUSY = "busy";
+	public static final String watchedHashtag = "#a";
 	HashtagTweetLists ht;
 	StatisticsEntity stat = new StatisticsEntity();
 
@@ -56,6 +57,7 @@ public class Processor extends ViewableAtomic{
 						process();
 						coe_matrix();
 						entropy();
+						herfindahl();
 					}
 					//observation time can be calculated based on the input data e.g: number of hashtags
 				}
@@ -104,6 +106,19 @@ public class Processor extends ViewableAtomic{
 		}
 
 		stat.setTop_tweeted(top_h);
+
+		//find the frequency of the watched hashtag
+		int count = 0;
+		int numWatched = 0;
+		for(Tweet t : ht.getTweets()){
+			for(Hashtag h : t.getHashtags()){
+				count++;
+				if(h.getText().equals(watchedHashtag)){
+					numWatched++;
+				}
+			}
+		}
+		stat.setwatchedPerc(numWatched * 1.0 / count);
 	}
 	
 	private void entropy(){
@@ -123,6 +138,29 @@ public class Processor extends ViewableAtomic{
 			entropy += P[j]*Math.log(P[j]);
 		
 		stat.setEntropy(entropy*-1);
+		
+		//System.out.println("CALCULATED ENTROPY: "+entropy*-1);
+	}
+
+	private void herfindahl(){
+		int nOfH = stat.getHashtags().size();
+		double P[] = new double[nOfH];
+		int total = 0;
+		
+		for(Hashtag h: stat.getHashtags().keySet())
+			total += stat.getHashtags().get(h);
+		
+		int i=0;
+		for(Hashtag h: stat.getHashtags().keySet())
+			P[i++] = (double) stat.getHashtags().get(h) / total;
+		
+		double hhi = 0;
+		for(int j=0; j< nOfH; j++)
+			hhi += P[j] * P[j];
+
+		hhi = (hhi - 1.0 / nOfH) / (1 - 1.0 / nOfH);
+		
+		stat.setHerf(hhi);
 		
 		//System.out.println("CALCULATED ENTROPY: "+entropy*-1);
 	}

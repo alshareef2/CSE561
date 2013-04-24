@@ -17,6 +17,8 @@ public class StatisticsEntity extends entity{
 	private Tweet top_retweeted;
 	private Matrix coe_matrix;
 	private double entropy;
+	private double herfindahl;
+	private double watchedPerc;
 	private int numOfUsers;
 	private Map<Hashtag, Integer> hashtags = new HashMap<Hashtag, Integer>();
 	
@@ -55,6 +57,23 @@ public class StatisticsEntity extends entity{
 	public double getEntropy(){
 		return entropy;
 	}
+
+	public double getwatchedPerc(){
+		return this.watchedPerc;
+	}
+
+	public void setwatchedPerc(double watchedPerc){
+		this.watchedPerc = watchedPerc;
+	}
+
+	public void setHerf(double herf){
+		herfindahl = herf;
+	}
+
+	public double getHerf(){
+		return herfindahl;
+	}
+
 	
 	/**
 	 * @return the top_tweeted

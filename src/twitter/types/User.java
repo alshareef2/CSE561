@@ -4,8 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import twitter.selections.ItemSelector;
-import twitter.selections.UniformRandomSelector;
+import twitter.selections.*;
 
 public class User implements Comparable<User>{
 
@@ -38,8 +37,8 @@ public class User implements Comparable<User>{
 	public User(int userID) {
 		super();
 		this.userID = userID;
-		pTweet = .2;
-		pRetweet = .7;
+		pTweet = .4;
+		pRetweet = .4;
 	}
 
 	/**
@@ -100,8 +99,7 @@ public class User implements Comparable<User>{
 		}
 		
 		Collections.sort(timeline);
-		Collections.reverse(timeline);
-		
+
 		return timeline;
 	}
 
@@ -116,15 +114,23 @@ public class User implements Comparable<User>{
 		//select the tweet to retweet
 		List<Tweet> timeline = createTimeline();
 		
-		ItemSelector<Tweet> findNextTweet = new UniformRandomSelector<Tweet>(timeline); 
+		ItemSelector<Tweet> findNextTweet = new LastSelector<Tweet>(timeline); 
 		Tweet toRetweet = findNextTweet.getNextItem();
+		Tweet nextTweet = null;
+
 		//perform the retweet
 		if(toRetweet != null){
 			toRetweet.incrementNumberOfRT();
-			tweets.add(toRetweet);
+
+			nextTweet = new Tweet(nextTweetID);
+			nextTweet = toRetweet.logicalCopy(nextTweet);
+			nextTweet.setTime(tweetTime);
+			nextTweet.setUserID(this.userID);
+
+			tweets.add(nextTweet);
 		}
 		
-		return toRetweet;
+		return nextTweet;
 	}
 	
 	public Tweet tweet(long nextTweetID, long tweetTime, List<Hashtag> hashtags){

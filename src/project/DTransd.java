@@ -177,8 +177,10 @@ public class DTransd extends ViewableAtomic{
 
 		try {
 			System.out.println("WRITING TO THE FILE!");
+			double fracWatched = stat.getwatchedPerc();
 
-			String content = (twitter_time-10) + "\t" + stat.getEntropy() +"\t" + stat.getHashtags().size() + "\t"+ stat.getNumOfusers()+"\n";
+			String content = (twitter_time-10) + "\t" + stat.getEntropy() +"\t" + stat.getHashtags().size() + "\t"+ stat.getNumOfusers() + 
+				"\t" + fracWatched + "\n";
 			File file = new File("stats/stats_6000.txt");
 
 			if (!file.exists()) {
@@ -195,7 +197,7 @@ public class DTransd extends ViewableAtomic{
 				
 			BufferedWriter bw = new BufferedWriter(fw);
 			if(first_write){
-				bw.append("Time\tEntropy\tNum. Hashtags\tNum. Users\n");
+				bw.append("Time\tEntropy\tNum. Hashtags\tNum. Users\tFrac. Watched\n");
 			}
 			bw.append(content);//.write(content);
 			bw.close();

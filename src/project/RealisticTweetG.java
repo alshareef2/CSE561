@@ -59,7 +59,7 @@ public class RealisticTweetG extends ViewableAtomic {
     addTestInput(IN_START, new entity("Start"));
 
     rng = new Random();
-    zg = new ZipfGenerator(NUM_USERS, 1.);
+    zg = new ZipfGenerator(NUM_USERS, 2.);
   }
   
   public void initialize(){
@@ -79,9 +79,14 @@ public class RealisticTweetG extends ViewableAtomic {
 
       //set up the hashtags
       List<Hashtag> hashtags = new ArrayList<Hashtag>();
-      hashtags.add(new Hashtag(0, "#a", "1"));
-      hashtags.add(new Hashtag(1, "#b", "2"));
-      hashtags.add(new Hashtag(2, "#c", "3"));
+      int topicIdx = 1;
+      for(char cH = 'a'; cH <= 'z'; cH++){
+        hashtags.add(new Hashtag(0, "#" + cH, "" + topicIdx));
+        topicIdx++; 
+      }
+      // hashtags.add(new Hashtag(0, "#a", "1"));
+      // hashtags.add(new Hashtag(1, "#b", "2"));
+      // hashtags.add(new Hashtag(2, "#c", "3"));
       tie.setHashtags(hashtags);
       
       //set up the users
@@ -121,6 +126,7 @@ public class RealisticTweetG extends ViewableAtomic {
         TweetCommandEntity tce = new TweetCommandEntity();
         //now, randomly select a user
         User u = users.get(zg.next());
+        System.out.println("Selected User: " + u.getUserID());
         tce.setUser(u);
 
         double actionType = rng.nextDouble();
