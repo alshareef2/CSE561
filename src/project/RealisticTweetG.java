@@ -46,6 +46,7 @@ public class RealisticTweetG extends ViewableAtomic {
   //state
   private static final double tweetTimeInterval = 60.0;
   private static final double ourSendtimeInterval = 1.;
+  private long timeUntilDeath;
   private TwitterInitEntity sentOutTIE;
   
   public RealisticTweetG(){
@@ -114,7 +115,7 @@ public class RealisticTweetG extends ViewableAtomic {
     }
     else if(phaseIs(STATE_PRODUCING_TWEET_CMDS)){
       int x = 0;
-      int numTweets = (int) ((rng.nextDouble() + averageTweetsPerSecond) * standardDevTweetsPerSecond);
+      int numTweets = (int) ((rng.nextGaussian()  * standardDevTweetsPerSecond) + averageTweetsPerSecond);
       TweetCommandEntityList tcel = new TweetCommandEntityList();
       for(int i = 0; i < numTweets; i++){
         TweetCommandEntity tce = new TweetCommandEntity();
@@ -155,6 +156,7 @@ public class RealisticTweetG extends ViewableAtomic {
           averageTweetsPerSecond = se.getAvgTweetsPerTimeUnit();
           standardDevTweetsPerSecond = se.getStdTweetsPerTimeUnit();
           zg = new ZipfGenerator(NUM_USERS, 1.);
+          this.timeUntilDeath = se.getExperimentLife();
 
           holdIn(STATE_GENERATINGSETTINGS, 0);
         }
@@ -166,7 +168,13 @@ public class RealisticTweetG extends ViewableAtomic {
   }
 
   public void deltint(){
-    holdIn(STATE_PRODUCING_TWEET_CMDS, ourSendtimeInterval);
+    timeUntilDeath -= ourSendtimeInterval;
+    if(timeUntilDeath >= 0){
+      holdIn(STATE_PRODUCING_TWEET_CMDS, ourSendtimeInterval);  
+    }
+    else{
+      passivate();
+    }
   }
   
 }

@@ -80,7 +80,7 @@ public class TweetCreator extends ViewableAtomic{
     tweetsProduced = new ArrayList<Tweet>();
     nextTweetID = 0;
     twitterTime = 0;
-    probEvolve = 0.01;
+    probEvolve = 0.001;
   }
   
   private void processTweetCommand(TweetCommandEntity command){
@@ -110,11 +110,9 @@ public class TweetCreator extends ViewableAtomic{
         tagsToTweet = getHashtagsToTweet(1);
       }
       Tweet tweetedTweet = actionUser.tweet(nextTweetID++, twitterTime, tagsToTweet);
-      System.out.println("I am Tweeting: " + tweetedTweet);
       tweetsProduced.add(tweetedTweet);
       //if one of the tags is in the the extreme topic, tweet twice.
       if(extremeTopic != null && extremeTopic.getDuration() > 0.0){
-        System.out.println("EXTREME TWEET!!!!");
         boolean shouldTweetAgain = false;
         for(Hashtag tag : tagsToTweet){
           if(tag.getTopic().equals(extremeTopic.getTopic())){
@@ -122,6 +120,7 @@ public class TweetCreator extends ViewableAtomic{
           }
         }
         if(shouldTweetAgain){
+          System.out.println("Tweeting again, baby!!");
           Tweet anotherTweet = new Tweet(nextTweetID++);
           tweetedTweet.logicalCopy(anotherTweet);
           tweetsProduced.add(tweetedTweet);
@@ -165,6 +164,7 @@ public class TweetCreator extends ViewableAtomic{
     if(extremeTopic != null){
       extremeTopic.elapse(e);
       if(extremeTopic.getDuration() <= 0.0){
+        System.out.println("Extreme topic expired");
         extremeTopic = null;
       }
     }

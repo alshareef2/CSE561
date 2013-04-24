@@ -38,8 +38,8 @@ public class User implements Comparable<User>{
 	public User(int userID) {
 		super();
 		this.userID = userID;
-		pTweet = .33;
-		pRetweet = .33;
+		pTweet = .2;
+		pRetweet = .7;
 	}
 
 	/**
