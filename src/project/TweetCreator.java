@@ -41,6 +41,7 @@ public class TweetCreator extends ViewableAtomic{
   private double timeLeft;
   private double probEvolve;
   private Set<String> uniqueUsers;
+  private String hashtagToWatch;
 
   
   //input ports

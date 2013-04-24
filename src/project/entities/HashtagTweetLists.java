@@ -15,25 +15,16 @@ public class HashtagTweetLists extends entity{
 	private boolean isForced;
 	private int numberOfUniqueUsers;
 	private String assignTo;
-	private String hashtagToWatch;
 	
 	public HashtagTweetLists(){
 		
 	}
 	
-	public HashtagTweetLists(List<Hashtag> tags, List<Tweet> tweets, boolean isForced, int numberOfUniqueUsers, String hashtagToWatch){
+	public HashtagTweetLists(List<Hashtag> tags, List<Tweet> tweets, boolean isForced, int numberOfUniqueUsers){
 		hashtags = tags;
 		this.tweets = tweets;
 		this.isForced = isForced;
 		this.numberOfUniqueUsers = numberOfUniqueUsers;
-	}
-
-	public void sethashtagToWatch(String hashtagToWatch){
-		this.hashtagToWatch = hashtagToWatch;
-	}
-
-	public String gethashtagToWatch(){
-		return hashtagToWatch;
 	}
 
 	public void setAssignTo(String assignTo){

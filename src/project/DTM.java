@@ -46,9 +46,9 @@ public class DTM extends ViewableDigraph {
 
 		//code to start the experiment.
 		addInport("startExp");
-		addTestInput("startExp", new StartExperiment("Small Experiment", 500, 130, 2.0, 1.5));
-		addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 130, 2.0, 1.5));
-		addTestInput("startExp", new StartExperiment("Large, Many Tweets Experiment", 10000, 130, 20.0, 15.0));
+		addTestInput("startExp", new StartExperiment("Small Experiment", 500, 130, 2.0, 1.5, "#a"));
+		addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 130, 2.0, 1.5, "#a"));
+		addTestInput("startExp", new StartExperiment("Large, Many Tweets Experiment", 10000, 130, 20.0, 15.0, "#a"));
 		addCoupling(this, "startExp", g, RealisticTweetG.IN_START);
 
 		//add some test extreme topics
@@ -61,6 +61,8 @@ public class DTM extends ViewableDigraph {
 
 		addCoupling(tm, TweetCreator.OUT_TWEET, tr, "lists");
 		addCoupling(tr, "stat", this, "OUT");
+
+		addCoupling(this, "startExp", tr, "getExperiment");
 
 	}
 	
@@ -94,8 +96,8 @@ public class DTM extends ViewableDigraph {
     public void layoutForSimView()
     {
         preferredSize = new Dimension(696, 391);
-        ((ViewableComponent)withName("TweetCreator")).setPreferredLocation(new Point(47, 171));
+        ((ViewableComponent)withName("TweetCreator")).setPreferredLocation(new Point(137, 174));
+        ((ViewableComponent)withName("Real Tweet Gen")).setPreferredLocation(new Point(-65, 128));
         ((ViewableComponent)withName("DTransd")).setPreferredLocation(new Point(300, 59));
-        ((ViewableComponent)withName("Real Tweet Gen")).setPreferredLocation(new Point(-55, 86));
     }
 }
