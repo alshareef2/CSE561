@@ -5,6 +5,14 @@ def calcEnt(tups):
   ct = float(sum([y for x,y in tups]))
   return -sum([y / ct * log(y / ct) for x, y in tups])
 
+def calcHHI(tups):
+  try:
+    ct = float(sum([y for x,y in tups]))
+    hhi = sum([(y / ct)**2.0 for x, y in tups])
+    return (hhi - 1./len(tups))/(1 - 1./len(tups))
+  except ZeroDivisionError:
+    return 1.0
+
 htRegex = re.compile("#\w+")
 tmdiff = datetime.timedelta(hours=7)
 
@@ -34,6 +42,6 @@ for line in open(sys.argv[1]):
     print e
     continue
 
-print "Date,Num. HTs,Entropy"
+print "Date,Num. HTs,Entropy, HHI"
 for dt, htct in sorted(dthtct.items(), key=lambda x:x[0]):
-  print "%s,%d,%f" % (dt, len(htct), calcEnt(htct.items()))
+  print "%s,%d,%f,%f" % (dt, len(htct), calcEnt(htct.items()), calcHHI(htct.items()))
