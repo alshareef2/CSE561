@@ -3,6 +3,8 @@ package project;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.HashSet;
 
 import project.entities.ExtremeTopicCommand;
 
@@ -38,6 +40,8 @@ public class TweetCreator extends ViewableAtomic{
   private long twitterTime;
   private double timeLeft;
   private double probEvolve;
+  private Set<String> uniqueUsers;
+
   
   //input ports
   public static final String IN_CONFIG = "config";
@@ -56,6 +60,8 @@ public class TweetCreator extends ViewableAtomic{
     super(name);
     
     rng = new Random();
+    uniqueUsers = new HashSet<String>();
+
     
     //add the ports
     addInport(IN_CONFIG);
@@ -63,6 +69,7 @@ public class TweetCreator extends ViewableAtomic{
     addInport(IN_RETURNSTATSNOW);
     addInport(IN_EXTREMETOPIC);
     addOutport(OUT_TWEET);
+
   }
   
   public void initialize(){
@@ -91,6 +98,7 @@ public class TweetCreator extends ViewableAtomic{
       if(retweetedTweet != null){
         tweetsProduced.add(retweetedTweet); 
       }
+      uniqueUsers.add("" + actionUser.getUserID());
       break;
     case TWEET:
       List<Hashtag> tagsToTweet;
@@ -118,6 +126,7 @@ public class TweetCreator extends ViewableAtomic{
           tweetsProduced.add(tweetedTweet);
         }
       }
+      uniqueUsers.add("" + actionUser.getUserID());
       
       break;
     case DONOTHING:
@@ -237,9 +246,12 @@ public class TweetCreator extends ViewableAtomic{
         tagsTweeted.addAll(t.getHashtags());  
       }
     }
-    content c = makeContent(OUT_TWEET, new HashtagTweetLists(tagsTweeted, tweetsTweeted, forcedReturnPhase));
+    content c = makeContent(OUT_TWEET, new HashtagTweetLists(tagsTweeted, tweetsTweeted, forcedReturnPhase, uniqueUsers.size()));
     m.add(c);
     tweetsProduced.clear();
+    if(!forcedReturnPhase){
+      uniqueUsers.clear();  
+    }
 
     return m;
   }

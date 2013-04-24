@@ -13,16 +13,18 @@ public class HashtagTweetLists extends entity{
 	private List<Hashtag> hashtags = new LinkedList<Hashtag>();
 	private List<Tweet> tweets = new LinkedList<Tweet>();
 	private boolean isForced;
+	private int numberOfUniqueUsers;
 	private String assignTo;
 	
 	public HashtagTweetLists(){
 		
 	}
 	
-	public HashtagTweetLists(List<Hashtag> tags, List<Tweet> tweets, boolean isForced){
+	public HashtagTweetLists(List<Hashtag> tags, List<Tweet> tweets, boolean isForced, int numberOfUniqueUsers){
 		hashtags = tags;
 		this.tweets = tweets;
 		this.isForced = isForced;
+		this.numberOfUniqueUsers = numberOfUniqueUsers;
 	}
 
 	public void setAssignTo(String assignTo){
@@ -69,6 +71,13 @@ public class HashtagTweetLists extends entity{
 		this.tweets = tweets;
 	}
 	
+	public int getnumberOfUniqueUsers(){
+		return numberOfUniqueUsers;
+	}
+
+	public void setnumberOfUniqueUsers(int numberOfUniqueUsers){
+		this.numberOfUniqueUsers = numberOfUniqueUsers;
+	}
 	
 
 }
