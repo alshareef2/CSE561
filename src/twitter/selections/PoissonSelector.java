@@ -39,7 +39,7 @@ public class PoissonSelector<T> implements ItemSelector<T> {
       if(idx >= items.size()){
         idx = items.size() - 1;
       }
-      System.out.println("POISSON SELECTED " + idx);
+      System.out.println("POISSON SELECTED " + idx + ", " + items.get(idx));
       return items.get(idx);
     }
   }

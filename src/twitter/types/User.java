@@ -37,8 +37,8 @@ public class User implements Comparable<User>{
 	public User(int userID) {
 		super();
 		this.userID = userID;
-		pTweet = .4;
-		pRetweet = .4;
+		pTweet = .2;
+		pRetweet = .8;
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class User implements Comparable<User>{
 		//select the tweet to retweet
 		List<Tweet> timeline = createTimeline();
 		
-		ItemSelector<Tweet> findNextTweet = new LastSelector<Tweet>(timeline); 
+		ItemSelector<Tweet> findNextTweet = new PoissonSelector<Tweet>(timeline); 
 		Tweet toRetweet = findNextTweet.getNextItem();
 		Tweet nextTweet = null;
 

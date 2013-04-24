@@ -190,17 +190,17 @@ public class Processor extends ViewableAtomic{
 			}
 		}
 		
-		System.out.println("COEF DATA MATRIX:");
-		for(int i=0; i<60; i++){
-			for(int k=0; k<noOfH; k++)
-				System.out.print(data[i][k] + " ");
-			System.out.print("\n");
-		}
+		// System.out.println("COEF DATA MATRIX:");
+		// for(int i=0; i<60; i++){
+		// 	for(int k=0; k<noOfH; k++)
+		// 		System.out.print(data[i][k] + " ");
+		// 	System.out.print("\n");
+		// }
 
 		Matrix m = CorrelationMatrix.makeCorrelationMatrix(data);
 		stat.setCOEMatrix(m);
 		
-		System.out.println("COEF MATRIX:\n"+stat.getCOEMatrix());
+		// System.out.println("COEF MATRIX:\n"+stat.getCOEMatrix());
 	}
 
 	public message out(){

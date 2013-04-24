@@ -74,14 +74,13 @@ public class RealisticTweetG extends ViewableAtomic {
     if(phaseIs(STATE_GENERATINGSETTINGS)){
       TwitterInitEntity tie = new TwitterInitEntity();
       System.out.println("Generating Settings with: (" + NUM_USERS + ", " + NUM_FRIENDS + ")");
-      StylizedGraph net = new WattsStrogatz(NUM_USERS, NUM_FRIENDS, .6);
-      //Abdul, I got rid of this. I hope it fixes your error!! - Fred
+      StylizedGraph net = new WattsStrogatz(NUM_USERS, NUM_FRIENDS, .4);
 
       //set up the hashtags
       List<Hashtag> hashtags = new ArrayList<Hashtag>();
       int topicIdx = 1;
       for(char cH = 'a'; cH <= 'z'; cH++){
-        hashtags.add(new Hashtag(0, "#" + cH, "" + topicIdx));
+        hashtags.add(new Hashtag(topicIdx, "#" + cH, "" + topicIdx));
         topicIdx++; 
       }
       // hashtags.add(new Hashtag(0, "#a", "1"));

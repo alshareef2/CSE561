@@ -12,6 +12,7 @@ public class ExtremeTopicCommand extends entity{
   }
 
   public ExtremeTopicCommand(String topic, double duration){
+    super(topic + ", " + duration);
     this.topic = topic;
     this.duration = duration;
   }

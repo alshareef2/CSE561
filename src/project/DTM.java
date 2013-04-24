@@ -46,17 +46,18 @@ public class DTM extends ViewableDigraph {
 
 		//code to start the experiment.
 		addInport("startExp");
-		addTestInput("startExp", new StartExperiment("Small Experiment", 500, 130, 2.0, 1.5, "#a", 1000));
+		addTestInput("startExp", new StartExperiment("Small Experiment", 500, 150, 2.0, 1.5, "#a", 1000));
 		// addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 130, 2.0, 1.5, "#a", 1000));
-		addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 130, 2.0, 1.5, "#a", 10080));
+		addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 150, 2.0, 1.5, "#a", 10080));
 		// addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 130, 120.0, 15.5, "#a", 1000));
-		addTestInput("startExp", new StartExperiment("Large, Many Tweets Experiment", 10000, 130, 20.0, 15.0, "#a", 1000));
+		addTestInput("startExp", new StartExperiment("Large, Many Tweets Experiment", 10000, 150, 20.0, 15.0, "#a", 1000));
 		addCoupling(this, "startExp", g, RealisticTweetG.IN_START);
 
 		//add some test extreme topics
 		addInport("extremeTopic");
 		addCoupling(this, "extremeTopic", tm, TweetCreator.IN_EXTREMETOPIC);
 		addTestInput("extremeTopic", new ExtremeTopicCommand("1", 1440.0));
+		addTestInput("extremeTopic", new ExtremeTopicCommand("1", 100.0));
 
 		addCoupling(g, TweetG.OUT_SETTINGS, tm, TweetCreator.IN_CONFIG);
 		addCoupling(g, TweetG.OUT_TWTCMD, tm, TweetCreator.IN_TWEETCOMMAND);
@@ -98,8 +99,8 @@ public class DTM extends ViewableDigraph {
     public void layoutForSimView()
     {
         preferredSize = new Dimension(696, 391);
-        ((ViewableComponent)withName("TweetCreator")).setPreferredLocation(new Point(137, 174));
-        ((ViewableComponent)withName("Real Tweet Gen")).setPreferredLocation(new Point(-65, 128));
         ((ViewableComponent)withName("DTransd")).setPreferredLocation(new Point(300, 59));
+        ((ViewableComponent)withName("Real Tweet Gen")).setPreferredLocation(new Point(-65, 128));
+        ((ViewableComponent)withName("TweetCreator")).setPreferredLocation(new Point(37, 23));
     }
 }
