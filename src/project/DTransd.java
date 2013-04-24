@@ -111,12 +111,10 @@ public class DTransd extends ViewableAtomic{
 	public void writeToFile(StatisticsEntity stat) {
 
 		try {
-
 			System.out.println("WRITING TO THE FILE!");
 
-			String content = cur_time + "\t" + stat.getEntropy() +"\t" + stat.getHashtags().size() +"\n";
+			String content = cur_time + "\t" + stat.getEntropy() +"\t" + stat.getHashtags().size() + "\t"+ stat.getNumOfusers()+"\n";
 			cur_time += 60;
-			//	File file = new File("/users/mkyong/filename.txt");
 			File file = new File("stats/stats_6000.txt");
 
 			if (!file.exists()) {
@@ -133,7 +131,7 @@ public class DTransd extends ViewableAtomic{
 				
 			BufferedWriter bw = new BufferedWriter(fw);
 			if(first_write){
-				bw.append("Time\tEntropy\tNum. Hashtags\n");
+				bw.append("Time\tEntropy\tNum. Hashtags\tNum. Users\n");
 			}
 			bw.append(content);//.write(content);
 			bw.close();

@@ -70,6 +70,7 @@ public class Processor extends ViewableAtomic{
 
 	private void process() {
 		stat = new StatisticsEntity();
+		stat.setNumOfusers(ht.getnumberOfUniqueUsers());
 		for (Hashtag hashtag : ht.getHashtags()) {
 			stat.getHashtags().put(hashtag, 0);
 		}

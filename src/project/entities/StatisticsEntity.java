@@ -17,6 +17,7 @@ public class StatisticsEntity extends entity{
 	private Tweet top_retweeted;
 	private Matrix coe_matrix;
 	private double entropy;
+	private int numOfUsers;
 	private Map<Hashtag, Integer> hashtags = new HashMap<Hashtag, Integer>();
 	
 	public StatisticsEntity(){
@@ -25,6 +26,14 @@ public class StatisticsEntity extends entity{
 
 	public void setProcessedBy(String processedBy){
 		this.processedBy = processedBy;
+	}
+	
+	public void setNumOfusers(int numOfUsers){
+		this.numOfUsers = numOfUsers;
+	}
+	
+	public int getNumOfusers(){
+		return numOfUsers;
 	}
 	
 	public String getProcessedBy(){
