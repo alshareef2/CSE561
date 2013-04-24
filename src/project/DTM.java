@@ -46,9 +46,9 @@ public class DTM extends ViewableDigraph {
 
 		//code to start the experiment.
 		addInport("startExp");
-		addTestInput("startExp", new StartExperiment("Small Experiment", 500, 130, 2.0, 1.5, "#a"));
-		addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 130, 2.0, 1.5, "#a"));
-		addTestInput("startExp", new StartExperiment("Large, Many Tweets Experiment", 10000, 130, 20.0, 15.0, "#a"));
+		addTestInput("startExp", new StartExperiment("Small Experiment", 500, 130, 2.0, 1.5, "#a", 1000));
+		addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 130, 2.0, 1.5, "#a", 1000));
+		addTestInput("startExp", new StartExperiment("Large, Many Tweets Experiment", 10000, 130, 20.0, 15.0, "#a", 1000));
 		addCoupling(this, "startExp", g, RealisticTweetG.IN_START);
 
 		//add some test extreme topics
