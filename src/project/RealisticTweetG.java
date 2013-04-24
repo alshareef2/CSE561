@@ -113,9 +113,8 @@ public class RealisticTweetG extends ViewableAtomic {
       c = makeContent(OUT_SETTINGS, tie);
     }
     else if(phaseIs(STATE_PRODUCING_TWEET_CMDS)){
-
+      int x = 0;
       int numTweets = (int) ((rng.nextDouble() + averageTweetsPerSecond) * standardDevTweetsPerSecond);
-
       TweetCommandEntityList tcel = new TweetCommandEntityList();
       for(int i = 0; i < numTweets; i++){
         TweetCommandEntity tce = new TweetCommandEntity();
@@ -136,7 +135,6 @@ public class RealisticTweetG extends ViewableAtomic {
         tce.setTagsToTweet(null);
         tcel.addEntity(tce);
       }
-      
       System.out.println("Generating " + tcel.getEntities().size() + " tweets.");
       c = makeContent(OUT_TWTCMD, tcel);
     }
@@ -156,6 +154,8 @@ public class RealisticTweetG extends ViewableAtomic {
           NUM_FRIENDS = se.getNumFriends();
           averageTweetsPerSecond = se.getAvgTweetsPerTimeUnit();
           standardDevTweetsPerSecond = se.getStdTweetsPerTimeUnit();
+          zg = new ZipfGenerator(NUM_USERS, 1.);
+
           holdIn(STATE_GENERATINGSETTINGS, 0);
         }
         catch(ClassCastException cce){

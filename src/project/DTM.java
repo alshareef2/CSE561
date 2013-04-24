@@ -94,9 +94,8 @@ public class DTM extends ViewableDigraph {
     public void layoutForSimView()
     {
         preferredSize = new Dimension(696, 391);
-        ((ViewableComponent)withName("P2")).setPreferredLocation(new Point(269, 42));
-        ((ViewableComponent)withName("TweetCreator")).setPreferredLocation(new Point(33, 94));
-        ((ViewableComponent)withName("Real Tweet Gen")).setPreferredLocation(new Point(-35, 12));
-        ((ViewableComponent)withName("DTransd")).setPreferredLocation(new Point(211, 174));
+        ((ViewableComponent)withName("TweetCreator")).setPreferredLocation(new Point(47, 171));
+        ((ViewableComponent)withName("DTransd")).setPreferredLocation(new Point(300, 59));
+        ((ViewableComponent)withName("Real Tweet Gen")).setPreferredLocation(new Point(-55, 86));
     }
 }
