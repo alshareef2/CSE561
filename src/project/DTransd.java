@@ -28,7 +28,7 @@ public class DTransd extends ViewableAtomic{
 	public static final String SEND2 = "sendJobAndStats";
 	HashtagTweetLists ht;
 	StatisticsEntity stat = new StatisticsEntity();
-	int sendTo, num_of_proc = 0 , max_proc = 3;
+	int sendTo, num_of_proc = 0 , max_proc = DTM.PROCS;
 	int proc_counter = 0;
 	int twitter_time;
 	Queue<HashtagTweetLists> waiting_lists = new LinkedList<HashtagTweetLists>();
@@ -113,7 +113,7 @@ public class DTransd extends ViewableAtomic{
 					watchedSet.add(tweet.getUserID());
 		}
 	}
-	
+
 	public void writeToWatchedFile() {
 
 		try {
@@ -132,7 +132,7 @@ public class DTransd extends ViewableAtomic{
 			else{
 				fw = new FileWriter(file.getAbsoluteFile(), true);
 			}
-				
+
 			BufferedWriter bw = new BufferedWriter(fw);
 			if(first_write){
 				bw.append("Time\tNum. Users\n");
@@ -180,7 +180,7 @@ public class DTransd extends ViewableAtomic{
 			double fracWatched = stat.getwatchedPerc();
 
 			String content = (twitter_time-10) + "\t" + stat.getEntropy() +"\t" + stat.getHashtags().size() + "\t"+ stat.getNumOfusers() + 
-				"\t" + stat.getHerf() + "\t" + fracWatched + "\n";
+			"\t" + stat.getHerf() + "\t" + fracWatched + "\n";
 			File file = new File("stats/stats_6000.txt");
 
 			if (!file.exists()) {
@@ -194,7 +194,7 @@ public class DTransd extends ViewableAtomic{
 			else{
 				fw = new FileWriter(file.getAbsoluteFile(), true);
 			}
-				
+
 			BufferedWriter bw = new BufferedWriter(fw);
 			if(first_write){
 				bw.append("Time\tEntropy\tNum. Hashtags\tNum. Users\tHHI\tFrac. Watched\n");
@@ -224,6 +224,24 @@ public class DTransd extends ViewableAtomic{
 		addCoupling(proc.getName(),"stat",parent.tr.getName(),"solved");
 		addOutport(parent.tr.getName(),"send_lists_" + proc.getName());
 		addCoupling(parent.tr.getName(),"send_lists_" + proc.getName(),proc.getName(),"lists");
+		
+		//between hashtags
+		/*
+		addInport(proc.getName(),"Hashtag");
+		addOutport(proc.getName(),"Hashtag");
+		
+		for(Processor P: parent.procList){
+			if(!P.getName().equals(proc.getName())){
+				//addInport(P.getName(),"Hashtag_" + proc.getName());
+				//addOutport(P.getName(),"Hashtag_" + proc.getName());
+				//addInport(proc.getName(),"Hashtag_" + P.getName());
+				//addOutport(proc.getName(),"Hashtag_" + P.getName());
+				addCoupling(P.getName(),"Hashtag",proc.getName(),"Hashtag");
+				addCoupling(proc.getName(),"Hashtag",P.getName(),"Hashtag");
+			}
+
+		 
+		}*/
 
 	}
 

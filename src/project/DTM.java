@@ -85,7 +85,8 @@ public class DTM extends ViewableDigraph {
 
 	public Processor addProcessor(int proc_counter, double duration){
 		
-		Processor proc = new Processor("P"+proc_counter, this.processing_time);			
+		//Processor proc = new Processor("P"+proc_counter, this.processing_time);
+		Processor proc = new Processor("P"+proc_counter, this.processing_time);
 		//Add the processor into the list
 		procList.add(proc);
 			
@@ -98,9 +99,12 @@ public class DTM extends ViewableDigraph {
      */
     public void layoutForSimView()
     {
-        preferredSize = new Dimension(696, 391);
-        ((ViewableComponent)withName("DTransd")).setPreferredLocation(new Point(300, 59));
-        ((ViewableComponent)withName("Real Tweet Gen")).setPreferredLocation(new Point(-65, 128));
-        ((ViewableComponent)withName("TweetCreator")).setPreferredLocation(new Point(37, 23));
+        preferredSize = new Dimension(887, 489);
+        ((ViewableComponent)withName("DTransd")).setPreferredLocation(new Point(296, 267));
+        ((ViewableComponent)withName("TweetCreator")).setPreferredLocation(new Point(207, 143));
+        ((ViewableComponent)withName("P1")).setPreferredLocation(new Point(170, 394));
+        ((ViewableComponent)withName("Real Tweet Gen")).setPreferredLocation(new Point(25, 67));
+        ((ViewableComponent)withName("P2")).setPreferredLocation(new Point(353, 400));
+        ((ViewableComponent)withName("P3")).setPreferredLocation(new Point(528, 411));
     }
 }
