@@ -213,7 +213,7 @@ public class DTransd extends ViewableAtomic{
 	}
 
 	private void addProcessor(double duration){
-		DTM parent = (DTM) getParent();
+		DTM_expanded parent = (DTM_expanded) getParent();
 		//	 exLog.append(parent.getSimulator().getTL()+","+"client"+parent.subCount+","+"created"+"\n");
 		proc_counter ++;
 		num_of_proc ++;
@@ -246,7 +246,7 @@ public class DTransd extends ViewableAtomic{
 	}
 
 	private void removeProcessor(String procName){
-		DTM parent = (DTM) getParent();
+		DTM_expanded parent = (DTM_expanded) getParent();
 
 		removeCoupling(parent.tr.getName(),"send_lists_"+procName,procName,"lists");
 		removeCoupling(procName,"stat",parent.tr.getName(),"solved");
