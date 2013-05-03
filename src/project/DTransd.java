@@ -27,13 +27,13 @@ public class DTransd extends ViewableAtomic{
 	public static final String OBSERVE = "observing";
 	public static final String SEND = "sending";
 	public static final String SEND2 = "sendJobAndStats";
-	
+
 	// Ports
 	public static final String LISTS_P = "lists";
 	public static final String SOLVED_P = "solved";
 	public static final String GET_EXP_P = "getExperiment";
 	public static final String STAT_P = "stat";
-	
+
 	HashtagTweetLists ht;
 	StatisticsEntity stat = new StatisticsEntity();
 	int sendTo, num_of_proc = 0 , max_proc = DTM.PROCS;
@@ -69,6 +69,7 @@ public class DTransd extends ViewableAtomic{
 		ht = null;
 
 		for (int i=0; i< x.getLength();i++){
+			// the received input contains twitter lists which need to be processed
 			if (messageOnPort(x,"lists",i))
 			{
 				if(x.getValOnPort("lists",i) instanceof HashtagTweetLists)
@@ -84,7 +85,9 @@ public class DTransd extends ViewableAtomic{
 					}
 				}
 				//observation time can be calculated based on the input data e.g: number of hashtags
-			} else if(messageOnPort(x,SOLVED_P,i)){
+			} 
+			// the received input contains statistics that have been calculated by a processor
+			else if(messageOnPort(x,SOLVED_P,i)){
 				stat = (StatisticsEntity) x.getValOnPort(SOLVED_P, i);
 				if(waiting_lists.isEmpty()){
 					removeProcessor(stat.getProcessedBy());
@@ -98,55 +101,27 @@ public class DTransd extends ViewableAtomic{
 					holdIn(SEND2, 0);
 				}
 
-			} else if(messageOnPort(x,GET_EXP_P,i)){
+			} 
+			// the received input contains some experiment data (received only at the beginning of the experiment)
+			else if(messageOnPort(x,GET_EXP_P,i)){
 				StartExperiment exp = (StartExperiment) x.getValOnPort(GET_EXP_P, i);
 				watchHashtag = exp.getHashtagToWatch();
 			}
 		}
 	}
 
+	/**
+	 * this method to update users information about the watched hashtag
+	 * it basically calculate the number of users that have been aware of
+	 * this hashtag at some time unit
+	 * 
+	 */
 	private void updateWatchSet() {
 		for (Tweet tweet : ht.getTweets()) {
 			for(Hashtag hashtag: tweet.getHashtags())
 				if(hashtag.getText().equals(watchHashtag))
 					watchedSet.add(tweet.getUserID());
 		}
-	}
-
-	public void writeToWatchedFile() {
-
-		try {
-
-			String content = (twitter_time-10) + "\t" + watchedSet.size() + "\n";
-			File file = new File("stats/watchedHashtag.txt");
-
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			FileWriter fw;
-			if(first_write){
-				fw = new FileWriter(file.getAbsoluteFile());
-
-			}
-			else{
-				fw = new FileWriter(file.getAbsoluteFile(), true);
-			}
-
-			BufferedWriter bw = new BufferedWriter(fw);
-			if(first_write){
-				bw.append("Time\tNum. Users\n");
-			}
-			bw.append(content);//.write(content);
-			bw.close();
-
-
-			//first_write = false;
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (NullPointerException e){
-			e.printStackTrace();
-		}
-
 	}
 
 	public void deltint(){
@@ -172,6 +147,46 @@ public class DTransd extends ViewableAtomic{
 		return m;
 	}
 
+	/**
+	 * this method to add processor 
+	 * 
+	 * @param duration to define the processing sigma
+	 * 
+	 */
+	private void addProcessor(double duration){
+		DTM parent = (DTM) getParent();
+		proc_counter ++;
+		num_of_proc ++;
+		Processor proc = parent.addProcessor(proc_counter, duration);
+		addModel(proc);
+
+		// add coupling between transd and proc
+		addCoupling(proc.getName(),STAT_P,parent.tr.getName(),SOLVED_P);
+		addOutport(parent.tr.getName(),"send_lists_" + proc.getName());
+		addCoupling(parent.tr.getName(),"send_lists_" + proc.getName(),proc.getName(),"lists");
+
+	}
+
+	/**
+	 * this method to remove a processor if it is not needed anymore
+	 * 
+	 * @param processor name to be removed
+	 * 
+	 */
+	private void removeProcessor(String procName){
+		DTM parent = (DTM) getParent();
+
+		removeCoupling(parent.tr.getName(),"send_lists_"+procName,procName,"lists");
+		removeCoupling(procName,STAT_P,parent.tr.getName(),SOLVED_P);
+		removeOutport(parent.tr.getName(),"send_lists_"+procName);
+
+		removeModel(procName);
+		num_of_proc --;
+	}
+
+	/**
+	 * write some experiment result to a file (twitter statistics)
+	 */
 	public void writeToFile(StatisticsEntity stat) {
 
 		try {
@@ -210,47 +225,37 @@ public class DTransd extends ViewableAtomic{
 
 	}
 
-	private void addProcessor(double duration){
-		DTM parent = (DTM) getParent();
-		proc_counter ++;
-		num_of_proc ++;
-		Processor proc = parent.addProcessor(proc_counter, duration);
-		addModel(proc);
+	/**
+	 * write some experiment result to a file (watched hashtag data)
+	 */
+	public void writeToWatchedFile() {
 
-		// between transd and proc
-		addCoupling(proc.getName(),STAT_P,parent.tr.getName(),SOLVED_P);
-		addOutport(parent.tr.getName(),"send_lists_" + proc.getName());
-		addCoupling(parent.tr.getName(),"send_lists_" + proc.getName(),proc.getName(),"lists");
-		
-		//between hashtags
-		/*
-		addInport(proc.getName(),"Hashtag");
-		addOutport(proc.getName(),"Hashtag");
-		
-		for(Processor P: parent.procList){
-			if(!P.getName().equals(proc.getName())){
-				//addInport(P.getName(),"Hashtag_" + proc.getName());
-				//addOutport(P.getName(),"Hashtag_" + proc.getName());
-				//addInport(proc.getName(),"Hashtag_" + P.getName());
-				//addOutport(proc.getName(),"Hashtag_" + P.getName());
-				addCoupling(P.getName(),"Hashtag",proc.getName(),"Hashtag");
-				addCoupling(proc.getName(),"Hashtag",P.getName(),"Hashtag");
+		try {
+			String content = (twitter_time-10) + "\t" + watchedSet.size() + "\n";
+			File file = new File("stats/watchedHashtag.txt");
+
+			if (!file.exists()) 
+				file.createNewFile();
+			
+			FileWriter fw;
+			if(first_write)
+				fw = new FileWriter(file.getAbsoluteFile());
+			else
+				fw = new FileWriter(file.getAbsoluteFile(), true);
+
+			BufferedWriter bw = new BufferedWriter(fw);
+			if(first_write){
+				bw.append("Time\tNum. Users\n");
 			}
+			bw.append(content);
+			bw.close();
 
-		 
-		}*/
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e){
+			e.printStackTrace();
+		}
 
-	}
-
-	private void removeProcessor(String procName){
-		DTM parent = (DTM) getParent();
-
-		removeCoupling(parent.tr.getName(),"send_lists_"+procName,procName,"lists");
-		removeCoupling(procName,STAT_P,parent.tr.getName(),SOLVED_P);
-		removeOutport(parent.tr.getName(),"send_lists_"+procName);
-
-		removeModel(procName);
-		num_of_proc --;
 	}
 
 }

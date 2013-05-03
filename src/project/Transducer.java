@@ -12,11 +12,8 @@ import project.entities.StatisticsEntity;
 import model.modeling.message;
 import view.modeling.ViewableAtomic;
 
-// Transd comment test
-// transd commit test
 public class Transducer extends ViewableAtomic{
 
-	double observation_time;
 	public static final String PASSIVE = "passive";
 	public static final String OBSERVE = "observing";
 	public static final String SEND = "sending";
@@ -27,20 +24,8 @@ public class Transducer extends ViewableAtomic{
 	int sendTo;
 	Queue<HashtagTweetLists> waiting_lists = new LinkedList<HashtagTweetLists>();
 
-	public Transducer(){
-		super("Transducer");
-		observation_time = 10;
-		addInport("lists");
-		addInport("solved");
-		addOutport("stat");
-		addOutport("send_lists_P1");
-		addOutport("send_lists_P2");
-		addOutport("send_lists_P3");
-	}
-
-	public Transducer(String name, double ot){
+	public Transducer(String name){
 		super(name);
-		observation_time = ot;
 		addInport("lists");
 		addInport("solved");
 		addOutport("stat");
@@ -146,37 +131,6 @@ public class Transducer extends ViewableAtomic{
 				m.add(makeContent("send_lists_P3", ht));
 		}
 		return m;
-	}
-
-	private void addProcessor(double duration){
-		TwitterModel parent = (TwitterModel) getParent();
-		//	 exLog.append(parent.getSimulator().getTL()+","+"client"+parent.subCount+","+"created"+"\n");
-		Processor proc = parent.addProcessor(duration);
-		addModel(proc);
-
-		// subcscriber to router
-		//addCoupling(proc.getName(),"request",parent.router.getName(),"in");
-		//addOutport(parent.router.getName(),proc.getName());
-		//addCoupling(parent.router.getName(),proc.getName(),proc.getName(),"service");
-
-		// subcscriber to broker
-		//addCoupling(parent.broker.getName(),proc.getName(),proc.getName(),"found");
-		//addOutport(parent.broker.getName(),proc.getName());
-		//addCoupling(proc.getName(),"lookup",parent.broker.getName(),"subscribe");
-
-	}
-
-	private void removeProcessor(){
-		TwitterModel parent = (TwitterModel) getParent();
-
-		/*
-			 removeCoupling("service1","out","modelExecutor","add");
-			 removeCoupling("service2","out","modelExecutor","remove");
-			 removeOutport("service1","out");
-			 removeOutport("service2","out");
-		 */
-
-		removeModel("Subscriber2");
 	}
 
 }

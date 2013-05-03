@@ -7,18 +7,18 @@ import java.util.Random;
 import java.util.Set;
 import java.util.HashSet;
 
+import GenCol.entity;
+
 import project.entities.ExtremeTopicCommand;
 
 import model.modeling.content;
 import model.modeling.message;
 import project.entities.*;
-import twitter.graphs.stylized.StylizedGraph;
 import twitter.types.Hashtag;
 import twitter.types.Tweet;
 import twitter.types.User;
 import view.modeling.ViewableAtomic;
 
-// asdf
 
 public class TweetCreator extends ViewableAtomic{
 
@@ -43,9 +43,8 @@ public class TweetCreator extends ViewableAtomic{
 	private double timeLeft;
 	private double probEvolve;
 	private Set<String> uniqueUsers;
-	private String hashtagToWatch;
-
-
+	private boolean passivate = false;
+	
 	//input ports
 	public static final String IN_CONFIG = "config";
 	public static final String IN_TWEETCOMMAND = "tweetCommand";
@@ -62,7 +61,7 @@ public class TweetCreator extends ViewableAtomic{
 	boolean users_model = false;
 	public static boolean allUsersAware = false;
 	ArrayList <UserAM> userList;
-	
+
 	public TweetCreator(){
 		this("TweetCreator");
 	}
@@ -83,7 +82,7 @@ public class TweetCreator extends ViewableAtomic{
 		addOutport(OUT_TWEET_COM);
 
 	}
-	
+
 	public long getTwitterTime(){
 		return twitterTime;
 	}
@@ -196,7 +195,7 @@ public class TweetCreator extends ViewableAtomic{
 					TwitterInitEntity tmp = (TwitterInitEntity)x.getValOnPort(IN_CONFIG, i);
 					this.howOftenToTweet = tmp.getTimeToAction();
 					this.users = tmp.getUsers();
-					// generating user Atomic models
+					// generating user Atomic models if the network is small
 					DTM parent;
 					if(getParent() instanceof DTM && users.size() <= 5){
 						users_model = true;
@@ -207,19 +206,13 @@ public class TweetCreator extends ViewableAtomic{
 							addModel(userAM);
 							userList.add(userAM);
 							userAM.setBackgroundColor(Color.magenta);
-							//addCoupling(userAM.getName(),"stat",parent.tm.getName(),IN_TWEETCOMMAND);
 							addCoupling(parent.tm.getName(),OUT_TWEET_COM,userAM.getName(),"tweet");
-							//addOutport(userAM.getName(),"followers");
 							for(User usr: user.getFollowers()){
-								//addOutport(userAM.getName(),"follower_" + usr.getUserID());
 								addCoupling(userAM.getName(),"followers","User_"+usr.getUserID(),"timeline");
 							}
 							for(User usr: user.getFollowing()){
-								//addOutport(userAM.getName(),"follower_" + usr.getUserID());
 								addCoupling("User_"+usr.getUserID(),"followers",userAM.getName(),"timeline");
 							}
-							//addCoupling(userAM.getName(),"followers",parent.tr.getName(),"lists");
-							//System.out.println(user.getUserID()+" USERS GENERATED!!");
 						}
 					}
 					// finish generating users AMs
@@ -249,24 +242,30 @@ public class TweetCreator extends ViewableAtomic{
 		for(int i = 0; i < x.getLength(); i++){
 			if(messageOnPort(x, IN_TWEETCOMMAND, i)){
 				try{
-					TweetCommandEntityList tmp = (TweetCommandEntityList)x.getValOnPort(IN_TWEETCOMMAND, i);
-					users_cmds = tmp;
-					List<TweetCommandEntity> commands = tmp.getEntities();
-					for(TweetCommandEntity tce : commands){
-						processTweetCommand(tce); 
-					}
-
-					if(users_model){
-						boolean flag = true;
-						for(UserAM usrAM: userList){
-							if(!usrAM.getAware())
-								flag = false;
+					entity ent = x.getValOnPort(IN_TWEETCOMMAND, i);
+					if( ent instanceof entity && ent.getName().equals("STOP")){
+						passivate = true;
+						holdIn(STATE_RETURNSTATS,0);
+					} else {
+						TweetCommandEntityList tmp = (TweetCommandEntityList)x.getValOnPort(IN_TWEETCOMMAND, i);
+						users_cmds = tmp;
+						List<TweetCommandEntity> commands = tmp.getEntities();
+						for(TweetCommandEntity tce : commands){
+							processTweetCommand(tce); 
 						}
-						allUsersAware = flag;
-						tmp_sigma = sigma;
-						holdIn(STATE_SEND_CMDS, 0);
-					} else
-						holdIn(STATE_INTERCEPTED, sigma);
+
+						if(users_model){
+							boolean flag = true;
+							for(UserAM usrAM: userList){
+								if(!usrAM.getAware())
+									flag = false;
+							}
+							allUsersAware = flag;
+							tmp_sigma = sigma;
+							holdIn(STATE_SEND_CMDS, 0);
+						} else
+							holdIn(STATE_INTERCEPTED, sigma);
+					}
 				}
 				catch(ClassCastException cce){
 					System.out.println("Improper message on " + IN_TWEETCOMMAND);
@@ -289,7 +288,7 @@ public class TweetCreator extends ViewableAtomic{
 			content c = makeContent(OUT_TWEET_COM, users_cmds);
 			m.add(c);
 		} else{
-			
+
 
 			boolean forcedReturnPhase = phaseIs(STATE_RETURNSTATS);
 
@@ -318,12 +317,14 @@ public class TweetCreator extends ViewableAtomic{
 				uniqueUsers.clear();  
 			}
 		}
-		
+
 		return m;
 	}
 
 	public void deltint(){
-		if(phaseIs(STATE_TIMETOTWEET)){
+		if(passivate){
+			passivate();
+		}else if(phaseIs(STATE_TIMETOTWEET)){
 			// do the option for every user
 			double actionRoll;
 			for(User u : users){

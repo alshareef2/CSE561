@@ -22,6 +22,7 @@ public class RealisticTweetG extends ViewableAtomic {
 	//states
 	private static final String STATE_GENERATINGSETTINGS = "GenSettings";
 	private static final String STATE_PRODUCING_TWEET_CMDS = "SendTweets";
+	private static final String STATE_STOP_EXP = "stop_experiment";
 
 	//random things
 	private static int NUM_USERS = 10000;
@@ -145,6 +146,9 @@ public class RealisticTweetG extends ViewableAtomic {
 			System.out.println("Generating " + tcel.getEntities().size() + " tweets.");
 			c = makeContent(OUT_TWTCMD, tcel);
 		}
+		else if(phaseIs(STATE_STOP_EXP)){
+			c = makeContent(OUT_TWTCMD, new entity("STOP"));
+		}
 
 		m.add(c);
 		return m;
@@ -175,21 +179,27 @@ public class RealisticTweetG extends ViewableAtomic {
 	}
 
 	public void deltint(){
-		timeUntilDeath -= ourSendtimeInterval;
-		if(!extremeExp){
-			if(timeUntilDeath >= 0){
-				holdIn(STATE_PRODUCING_TWEET_CMDS, ourSendtimeInterval); 
+		if(phaseIs(STATE_STOP_EXP))
+			passivate();
+		else {
+			timeUntilDeath -= ourSendtimeInterval;
+			if(!extremeExp){
+				if(timeUntilDeath >= 0){
+					holdIn(STATE_PRODUCING_TWEET_CMDS, ourSendtimeInterval); 
 
-			}
-			else{
-				passivate();
-			}
-		} else {
-			if(!TweetCreator.allUsersAware && timeUntilDeath >= 0)
-				holdIn(STATE_PRODUCING_TWEET_CMDS, ourSendtimeInterval); 
-			else{
-				UserAM.writeToFile();
-				passivate();
+				}
+				else{
+					//passivate();
+					holdIn(STATE_STOP_EXP, 0);
+				}
+			} else {
+				if(!TweetCreator.allUsersAware && timeUntilDeath >= 0)
+					holdIn(STATE_PRODUCING_TWEET_CMDS, ourSendtimeInterval); 
+				else{
+					UserAM.writeToFile();
+					holdIn(STATE_STOP_EXP, 0);
+					//passivate();
+				}
 			}
 		}
 	}
