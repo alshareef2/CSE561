@@ -2,6 +2,10 @@ package util;
 
 import java.util.Random;
 
+/**
+* Generates integers from a Zipf distribution. 
+* This code was obtained from: http://diveintodata.org/2009/09/13/zipf-distribution-generator-in-java/.
+*/
 public class ZipfGenerator {
 	private Random rnd = new Random(System.currentTimeMillis());
 	private int size;

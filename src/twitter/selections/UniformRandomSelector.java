@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+* Returns a uniformly random selection from the list.
+*/
 public class UniformRandomSelector<T> implements ItemSelector<T> {
 
 	private List<T> items;

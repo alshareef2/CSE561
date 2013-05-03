@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+* This class gets a random item from the list, selected from a Poisson distribution (highly refers items earlier in the list).
+*/
 public class PoissonSelector<T> implements ItemSelector<T> {
 
   private List<T> items;
@@ -44,16 +47,17 @@ public class PoissonSelector<T> implements ItemSelector<T> {
     }
   }
 
+  //get the next Poisson number (Knuth's algorithm).
   private static int getPoisson(double lambda) {
-  double L = Math.exp(-lambda);
-  double p = 1.0;
-  int k = 0;
+    double L = Math.exp(-lambda);
+    double p = 1.0;
+    int k = 0;
 
-  do {
-    k++;
-    p *= Math.random();
-  } while (p > L);
+    do {
+      k++;
+      p *= Math.random();
+    } while (p > L);
 
-  return k - 1;
-}
+    return k - 1;
+  }
 }

@@ -5,9 +5,17 @@ import java.util.List;
 
 import util.Matrix;
 
+/**
+* A Watts-Strogatz stylized graph.
+*/
 public class WattsStrogatz implements StylizedGraph{
 	private Matrix m;
 	
+	/**
+	* @param numUsers the number of users in the graph
+	* @param numFriends the number of friends each user starts out with
+	* @param pRewire the random rewiring probability.
+	*/
 	public WattsStrogatz(int numUsers, int numFriends, double pRewire){
 		m = new Matrix(numUsers, numUsers);
 		//create the initial lattice
@@ -67,13 +75,5 @@ public class WattsStrogatz implements StylizedGraph{
 			}
 		}
 		return friends;
-	}
-	
-	public static void main(String[] args){
-		System.out.println("Making network.");
-		WattsStrogatz x = new WattsStrogatz(100, 10, 0.1);
-		System.out.println("Network created");
-		System.out.println(x.getUsersFriends(99));
-		System.out.println(x.getUsersFollowers(99));
 	}
 }

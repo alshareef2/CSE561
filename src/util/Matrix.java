@@ -1,5 +1,8 @@
 package util;
 
+/**
+* A matrix. This is used to handle networks.
+*/
 public class Matrix{
 
   protected double[][] matrix;
