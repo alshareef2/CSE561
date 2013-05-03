@@ -51,9 +51,7 @@ public class DTM extends ViewableDigraph {
 		//code to start the experiment.
 		addInport("startExp");
 		addTestInput("startExp", new StartExperiment("Small Experiment", 500, 150, 2.0, 1.5, "#a", 1000, false));
-		// addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 130, 2.0, 1.5, "#a", 1000));
 		addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 150, 2.0, 1.5, "#a", 10080, false));
-		// addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 130, 120.0, 15.5, "#a", 1000));
 		addTestInput("startExp", new StartExperiment("Large, Many Tweets Experiment", 10000, 150, 20.0, 15.0, "#a", 1000, false));
 		addCoupling(this, "startExp", g, RealisticTweetG.IN_START);
 
@@ -67,8 +65,8 @@ public class DTM extends ViewableDigraph {
 		addTestInput("extremeTopic", new ExtremeTopicCommand("1", 1440.0));
 		addTestInput("extremeTopic", new ExtremeTopicCommand("1", 100.0));
 
-		addCoupling(g, TweetG.OUT_SETTINGS, tm, TweetCreator.IN_CONFIG);
-		addCoupling(g, TweetG.OUT_TWTCMD, tm, TweetCreator.IN_TWEETCOMMAND);
+		addCoupling(g, RealisticTweetG.OUT_SETTINGS, tm, TweetCreator.IN_CONFIG);
+		addCoupling(g, RealisticTweetG.OUT_TWTCMD, tm, TweetCreator.IN_TWEETCOMMAND);
 
 		addCoupling(tm, TweetCreator.OUT_TWEET, tr, "lists");
 		addCoupling(tr, "stat", this, "Statistics");
@@ -130,15 +128,9 @@ public class DTM extends ViewableDigraph {
      */
     public void layoutForSimView()
     {
-        preferredSize = new Dimension(1039, 570);
+        preferredSize = new Dimension(928, 455);
+        ((ViewableComponent)withName("TweetCreator")).setPreferredLocation(new Point(246, 111));
+        ((ViewableComponent)withName("Real Tweet Gen")).setPreferredLocation(new Point(278, 238));
         ((ViewableComponent)withName("Transducer")).setPreferredLocation(new Point(50, 50));
-        ((ViewableComponent)withName("TweetCreator")).setPreferredLocation(new Point(250, 55));
-        ((ViewableComponent)withName("P17")).setPreferredLocation(new Point(50, 50));
-        ((ViewableComponent)withName("User_3")).setPreferredLocation(new Point(50, 50));
-        ((ViewableComponent)withName("User_2")).setPreferredLocation(new Point(50, 50));
-        ((ViewableComponent)withName("User_1")).setPreferredLocation(new Point(50, 50));
-        ((ViewableComponent)withName("Real Tweet Gen")).setPreferredLocation(new Point(50, 50));
-        ((ViewableComponent)withName("User_4")).setPreferredLocation(new Point(50, 50));
-        ((ViewableComponent)withName("User_0")).setPreferredLocation(new Point(50, 50));
     }
 }

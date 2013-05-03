@@ -57,15 +57,12 @@ public class Processor extends ViewableAtomic{
 						entropy();
 						herfindahl();
 					}
-					//observation time can be calculated based on the input data e.g: number of hashtags
 				}
 			}
 		}
 	}
 
 	public void deltint(){
-		//process();
-		
 		holdIn(PASSIVE, INFINITY);
 	}
 

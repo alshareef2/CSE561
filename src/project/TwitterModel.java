@@ -31,7 +31,7 @@ public class TwitterModel extends ViewableDigraph {
 
 		g = new RealisticTweetG();
 		tm = new TweetCreator();
-		tr = new Transducer();
+		tr = new Transducer("Transducer");
 
 		p1 = new Processor("P1",10);
 		p2 = new Processor("P2",10);
@@ -72,8 +72,8 @@ public class TwitterModel extends ViewableDigraph {
 		addCoupling(this, "extremeTopic", tm, TweetCreator.IN_EXTREMETOPIC);
 		addTestInput("extremeTopic", new ExtremeTopicCommand("1", 30.0));
 
-		addCoupling(g, TweetG.OUT_SETTINGS, tm, TweetCreator.IN_CONFIG);
-		addCoupling(g, TweetG.OUT_TWTCMD, tm, TweetCreator.IN_TWEETCOMMAND);
+		addCoupling(g, RealisticTweetG.OUT_SETTINGS, tm, TweetCreator.IN_CONFIG);
+		addCoupling(g, RealisticTweetG.OUT_TWTCMD, tm, TweetCreator.IN_TWEETCOMMAND);
 
 		addCoupling(tm, TweetCreator.OUT_TWEET, tr, "lists");
 		addCoupling(tr, "stat", this, "OUT");
