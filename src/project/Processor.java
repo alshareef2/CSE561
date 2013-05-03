@@ -44,6 +44,7 @@ public class Processor extends ViewableAtomic{
 		ht = null;
 
 		for (int i=0; i< x.getLength();i++){
+			// only accepts one input which the twitter lists that need processing
 			if (messageOnPort(x,LISTS_P,i))
 			{
 				if(x.getValOnPort(LISTS_P,i) instanceof HashtagTweetLists)
@@ -66,6 +67,13 @@ public class Processor extends ViewableAtomic{
 		holdIn(PASSIVE, INFINITY);
 	}
 
+	/**
+	 * this method to process the twitter lists
+	 * 
+	 * it prepares the lists for calculating entropy, herfindahl index, coefficient
+	 * it calculate the top tweeted hashtag, top retweeted tweet
+	 * 
+	 */
 	private void process() {
 		stat = new StatisticsEntity();
 		stat.setNumOfusers(ht.getnumberOfUniqueUsers());
@@ -76,9 +84,8 @@ public class Processor extends ViewableAtomic{
 		Tweet top_rt = new Tweet(-1111);
 		Hashtag top_h = new Hashtag(-1111,"","");
 		int max = 0;
-		//System.out.println("Number of Tweets: "+ht.getTweets().size() + ", Hashtags: "+ stat.getHashtags().size());
+	
 		for (Tweet tweet : ht.getTweets()) {
-			//System.out.println("TWEET ID:" + tweet.getTweetID() + ",Time: " + tweet.getTime());
 			if(tweet.getNumberOfRT() >= top_rt.getNumberOfRT()){
 				top_rt = tweet;
 			}
@@ -93,7 +100,6 @@ public class Processor extends ViewableAtomic{
 		stat.setTop_retweeted(top_rt);
 
 		for (Hashtag hashtag : ht.getHashtags()) {
-			//System.out.println("HASHTAG ID:" + top_h.getHashtagID() + ",TEXT" + top_h.getText());
 			if(stat.getHashtags().get(hashtag) >= max){
 				max = stat.getHashtags().get(hashtag);
 				top_h = hashtag;
@@ -116,6 +122,10 @@ public class Processor extends ViewableAtomic{
 		stat.setwatchedPerc(numWatched * 1.0 / count);
 	}
 	
+	/**
+	 * this method to calculate the hashtag entropy
+	 * 
+	 */
 	private void entropy(){
 		int nOfH = stat.getHashtags().size();
 		double P[] = new double[nOfH];
@@ -136,6 +146,10 @@ public class Processor extends ViewableAtomic{
 		
 	}
 
+	/**
+	 * this method to calculate the herfindahl index
+	 * 
+	 */
 	private void herfindahl(){
 		int nOfH = stat.getHashtags().size();
 		double P[] = new double[nOfH];
@@ -158,6 +172,10 @@ public class Processor extends ViewableAtomic{
 		
 	}
 
+	/**
+	 * this method to calculate the coefficient matrix for the hashtags
+	 * 
+	 */
 	private void coe_matrix(){
 		int noOfH = stat.getHashtags().size();
 		double data[][] = new double[60][noOfH];

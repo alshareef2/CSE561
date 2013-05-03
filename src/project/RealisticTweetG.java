@@ -158,6 +158,7 @@ public class RealisticTweetG extends ViewableAtomic {
 		Continue(e);
 
 		for(int i = 0; i < x.getLength(); i++){
+			// one input to start the experiment
 			if(messageOnPort(x, IN_START, i)){
 				try{
 					StartExperiment se = (StartExperiment) x.getValOnPort(IN_START, i);
@@ -179,26 +180,30 @@ public class RealisticTweetG extends ViewableAtomic {
 	}
 
 	public void deltint(){
+		// if the experiment has completed, then passivate 
 		if(phaseIs(STATE_STOP_EXP))
 			passivate();
 		else {
 			timeUntilDeath -= ourSendtimeInterval;
+			
+			// condition to kill the experiment (time to death)
 			if(!extremeExp){
 				if(timeUntilDeath >= 0){
 					holdIn(STATE_PRODUCING_TWEET_CMDS, ourSendtimeInterval); 
-
 				}
 				else{
-					//passivate();
+					// the experiment has completed, go the final state 
 					holdIn(STATE_STOP_EXP, 0);
 				}
-			} else {
+			}
+			// other condition to kill watching hashtag experiment, if all users are aware
+			else {
 				if(!TweetCreator.allUsersAware && timeUntilDeath >= 0)
 					holdIn(STATE_PRODUCING_TWEET_CMDS, ourSendtimeInterval); 
 				else{
+					// the experiment has completed, go the final state 
 					UserAM.writeToFile();
 					holdIn(STATE_STOP_EXP, 0);
-					//passivate();
 				}
 			}
 		}

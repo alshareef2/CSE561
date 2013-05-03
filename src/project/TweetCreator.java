@@ -97,6 +97,12 @@ public class TweetCreator extends ViewableAtomic{
 		probEvolve = 0.001;
 	}
 
+	/**
+	 * this method is to process the received command and do the required actions
+	 * 
+	 * @param tweet command that need to be processed
+	 * 
+	 */
 	private void processTweetCommand(TweetCommandEntity command){
 		User actionUser = command.getUser();
 		//do the thing that is commanded
@@ -152,6 +158,12 @@ public class TweetCreator extends ViewableAtomic{
 
 	}
 
+	/**
+	 * selects the hashtags to be tweeted
+	 * 
+	 * @param size, which indicates the number of hashtags to tweet
+	 * 
+	 */
 	private List<Hashtag> getHashtagsToTweet(int size){
 		List<Hashtag> tagsToTweet = new ArrayList<Hashtag>();
 		while(size-- > 0){
@@ -322,6 +334,7 @@ public class TweetCreator extends ViewableAtomic{
 	}
 
 	public void deltint(){
+		// the experiment is completed, then passivate
 		if(passivate){
 			passivate();
 		}else if(phaseIs(STATE_TIMETOTWEET)){
@@ -338,13 +351,17 @@ public class TweetCreator extends ViewableAtomic{
 				}
 			}
 		}
+		// for intercepted state, continue with the new sigma
 		else if(phaseIs(STATE_INTERCEPTED)){
 			holdIn(STATE_TIMETOTWEET, this.howOftenToTweet);
 		}
+		// to return the state after forced generating of the twitter lists
 		else if(phaseIs(STATE_RETURNSTATS)){
 			holdIn(STATE_TIMETOTWEET, timeLeft);
 			timeLeft = 0;
-		} else if(phaseIs(STATE_SEND_CMDS)){
+		} 
+		//  send tweeting commands to the users models
+		else if(phaseIs(STATE_SEND_CMDS)){
 			holdIn(STATE_INTERCEPTED, tmp_sigma);
 		}
 	}

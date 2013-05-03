@@ -14,10 +14,12 @@ import view.modeling.ViewableAtomic;
 
 public class Transducer extends ViewableAtomic{
 
+	// States
 	public static final String PASSIVE = "passive";
 	public static final String OBSERVE = "observing";
 	public static final String SEND = "sending";
 	public static final String SEND2 = "sendJobAndStats";
+	
 	HashtagTweetLists ht;
 	StatisticsEntity stat = new StatisticsEntity();
 	boolean P1, P2, P3;
