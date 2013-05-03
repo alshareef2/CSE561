@@ -2,7 +2,9 @@ package twitter.types;
 import java.util.LinkedList;
 import java.util.List;
 
-
+/**
+* This is the Tweet model. Mainly, this is a container for hashtags with annotations for time, user, and tweetID.
+*/
 public class Tweet implements Comparable<Tweet>{
 
   private long tweetID;

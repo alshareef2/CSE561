@@ -6,11 +6,17 @@ import java.util.List;
 
 import twitter.selections.*;
 
+/**
+* This model contains all of the data for the users. 
+*/
 public class User implements Comparable<User>{
 
 	private int userID;
+	//who follows the user
 	private List<User> followers = new LinkedList<User>();
+	//who the user follows
 	private List<User> following = new LinkedList<User>();
+	//tweets produced by the user
 	private List<Tweet> tweets = new LinkedList<Tweet>();
 	private double pTweet;
 	private double pRetweet;
@@ -90,6 +96,10 @@ public class User implements Comparable<User>{
 		return tweets;
 	}
 	
+	/**
+	* This method creates the user's timeline, the list of tweets that the user will see when he logs in to twitter.
+	* @return The list of tweets the user sees, from most recent, to least recent.
+	*/
 	private List<Tweet> createTimeline(){
 		List<Tweet> timeline = new ArrayList<Tweet>();
 		for(User i : getFollowing()){
@@ -110,6 +120,12 @@ public class User implements Comparable<User>{
 		this.tweets = tweets;
 	}
 
+	/**
+	* Here, the user chooses a tweet from his timeline and retweets it.
+	* @param nextTweetID the ID that the produced tweet will contain (even retweets need a new ID!).
+	* @param tweetTime the time that the tweet was retweeted.
+	* @return The published tweet.
+	*/
 	public Tweet retweet(long nextTweetID, long tweetTime){
 		//select the tweet to retweet
 		List<Tweet> timeline = createTimeline();
@@ -133,6 +149,13 @@ public class User implements Comparable<User>{
 		return nextTweet;
 	}
 	
+	/**
+	* Here, the user produces a tweet with the given hashtags.
+	* @param nextTweetID the ID that the produced tweet will contain.
+	* @param tweetTime the time that the tweet was produced.
+	* @param hashtags a list of hashtags that the user will retweet
+	* @return The published tweet.
+	*/
 	public Tweet tweet(long nextTweetID, long tweetTime, List<Hashtag> hashtags){
 		Tweet newTweet = new Tweet(nextTweetID);
 		newTweet.setHashtags(hashtags);
@@ -143,6 +166,10 @@ public class User implements Comparable<User>{
 		return newTweet;
 	}
 
+	/**
+	* Checks if two users are the same. If the users are the same they will have the same ID.
+	* @param otherUser the user to compare to.
+	*/
 	public int compareTo(User otherUser) {
 		return otherUser.userID - userID;
 	}

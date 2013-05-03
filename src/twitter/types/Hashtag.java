@@ -2,14 +2,21 @@ package twitter.types;
 import java.util.LinkedList;
 import java.util.List;
 
-// small change 2
+/**
+* This is a hashtag, one of the primary types.
+*/
 public class Hashtag {
-
+	//the ID of the hashtag
 	private int hashtagID;
+	//the text. e.g. "#Occupy" -> "Occupy"
 	private String text;
+	//the topic it is a part of.
 	private String topic;
+	//its previous mutations
 	private List<Hashtag> prev = new LinkedList<Hashtag>();
+	//its child mutations
 	private List<Hashtag> next = new LinkedList<Hashtag>();
+	//tweets containing this hashtag.
 	private List<Tweet> tweets = new LinkedList<Tweet>();
 	
 	/**
