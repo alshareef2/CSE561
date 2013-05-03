@@ -36,8 +36,7 @@ function [diff_matrix] = calcmds(filename)
     end
     
     %% Plot the MDS 
-	Y = mdscale(diff_matrix, 2);
-    disp(Y)
+	[Y stress] = mdscale(diff_matrix, 2);
 	plot(Y(:,1),Y(:,2),'bx');
 	text(Y(:,1),Y(:,2),labels,'HorizontalAlignment','left');
     
