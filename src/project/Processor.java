@@ -10,31 +10,29 @@ import view.modeling.ViewableAtomic;
 import util.CorrelationMatrix;
 import util.Matrix;
 
-// commit test
-// commit test
 public class Processor extends ViewableAtomic{
 
 	String pName;
 	double observation_time;
+	
+	// States
 	public static final String PASSIVE = "passive";
 	public static final String BUSY = "busy";
+	
+	// Ports
+	public static final String LISTS_P = "lists";
+	public static final String STAT_P = "stat";
+	
 	public static final String watchedHashtag = "#a";
 	HashtagTweetLists ht;
 	StatisticsEntity stat = new StatisticsEntity();
-
-	public Processor(){
-		super("Processor");
-		observation_time = 10;
-		addInport("lists");
-		addOutport("stat");
-	}
 
 	public Processor(String name, double ot){
 		super(name);
 		this.pName = name;
 		observation_time = ot;
-		addInport("lists");
-		addOutport("stat");
+		addInport(LISTS_P);
+		addOutport(STAT_P);
 	}
 
 	public void initialize(){
@@ -46,10 +44,10 @@ public class Processor extends ViewableAtomic{
 		ht = null;
 
 		for (int i=0; i< x.getLength();i++){
-			if (messageOnPort(x,"lists",i))
+			if (messageOnPort(x,LISTS_P,i))
 			{
-				if(x.getValOnPort("lists",i) instanceof HashtagTweetLists)
-					ht = (HashtagTweetLists) x.getValOnPort("lists", i);
+				if(x.getValOnPort(LISTS_P,i) instanceof HashtagTweetLists)
+					ht = (HashtagTweetLists) x.getValOnPort(LISTS_P, i);
 
 				if(ht != null){
 					if(phaseIs(PASSIVE)){
@@ -81,9 +79,9 @@ public class Processor extends ViewableAtomic{
 		Tweet top_rt = new Tweet(-1111);
 		Hashtag top_h = new Hashtag(-1111,"","");
 		int max = 0;
-		System.out.println("Number of Tweets: "+ht.getTweets().size() + ", Hashtags: "+ stat.getHashtags().size());
+		//System.out.println("Number of Tweets: "+ht.getTweets().size() + ", Hashtags: "+ stat.getHashtags().size());
 		for (Tweet tweet : ht.getTweets()) {
-			System.out.println("TWEET ID:" + tweet.getTweetID() + ",Time: " + tweet.getTime());
+			//System.out.println("TWEET ID:" + tweet.getTweetID() + ",Time: " + tweet.getTime());
 			if(tweet.getNumberOfRT() >= top_rt.getNumberOfRT()){
 				top_rt = tweet;
 			}
@@ -139,7 +137,6 @@ public class Processor extends ViewableAtomic{
 		
 		stat.setEntropy(entropy*-1);
 		
-		//System.out.println("CALCULATED ENTROPY: "+entropy*-1);
 	}
 
 	private void herfindahl(){
@@ -162,7 +159,6 @@ public class Processor extends ViewableAtomic{
 		
 		stat.setHerf(hhi);
 		
-		//System.out.println("CALCULATED ENTROPY: "+entropy*-1);
 	}
 
 	private void coe_matrix(){
@@ -174,33 +170,17 @@ public class Processor extends ViewableAtomic{
 				data[i][k] = 0;
 
 		for (Tweet tweet: ht.getTweets()){
-			
-			//System.out.print(tweet.getTweetID() +", NofH: "+ tweet.getHashtags().size() + " H# : ");
-			//for(Hashtag hashtag : tweet.getHashtags()){
-				//System.out.print(hashtag.getText() + ", ");
-			//}
-			//System.out.println("..");
-			
 			int i = 0;
 			for (Hashtag hashtag : stat.getHashtags().keySet()) {
 				if(tweet.getHashtags().contains(hashtag))
 					data[((int) tweet.getTime()) % 60][i] ++;
 				i++;
-				
 			}
 		}
-		
-		// System.out.println("COEF DATA MATRIX:");
-		// for(int i=0; i<60; i++){
-		// 	for(int k=0; k<noOfH; k++)
-		// 		System.out.print(data[i][k] + " ");
-		// 	System.out.print("\n");
-		// }
 
 		Matrix m = CorrelationMatrix.makeCorrelationMatrix(data);
 		stat.setCOEMatrix(m);
 		
-		// System.out.println("COEF MATRIX:\n"+stat.getCOEMatrix());
 	}
 
 	public message out(){
@@ -210,7 +190,7 @@ public class Processor extends ViewableAtomic{
 			System.out.println("Some Stats 2: " + stat.getTop_retweeted().getTweetID());
 			showState();
 			stat.setProcessedBy(pName);
-			m.add(makeContent("stat", stat));
+			m.add(makeContent(STAT_P, stat));
 		}
 		
 		return m;

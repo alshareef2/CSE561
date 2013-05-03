@@ -1,5 +1,6 @@
 package project;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -59,6 +60,8 @@ public class TweetCreator extends ViewableAtomic{
 	TweetCommandEntityList users_cmds;
 	double tmp_sigma;
 	boolean users_model = false;
+	public static boolean allUsersAware = false;
+	ArrayList <UserAM> userList;
 	
 	public TweetCreator(){
 		this("TweetCreator");
@@ -69,7 +72,7 @@ public class TweetCreator extends ViewableAtomic{
 
 		rng = new Random();
 		uniqueUsers = new HashSet<String>();
-
+		userList = new ArrayList <UserAM>(); 
 
 		//add the ports
 		addInport(IN_CONFIG);
@@ -79,6 +82,10 @@ public class TweetCreator extends ViewableAtomic{
 		addOutport(OUT_TWEET);
 		addOutport(OUT_TWEET_COM);
 
+	}
+	
+	public long getTwitterTime(){
+		return twitterTime;
 	}
 
 	public void initialize(){
@@ -196,8 +203,10 @@ public class TweetCreator extends ViewableAtomic{
 						parent = (DTM) getParent();
 						//parent.addUsers(users);
 						for(User user: users){
-							UserAM userAM = new UserAM("User_"+user.getUserID(), user.getUserID());
+							UserAM userAM = new UserAM("User_"+user.getUserID(), user.getUserID(), tmp.getHashtags());
 							addModel(userAM);
+							userList.add(userAM);
+							userAM.setBackgroundColor(Color.magenta);
 							//addCoupling(userAM.getName(),"stat",parent.tm.getName(),IN_TWEETCOMMAND);
 							addCoupling(parent.tm.getName(),OUT_TWEET_COM,userAM.getName(),"tweet");
 							//addOutport(userAM.getName(),"followers");
@@ -205,6 +214,11 @@ public class TweetCreator extends ViewableAtomic{
 								//addOutport(userAM.getName(),"follower_" + usr.getUserID());
 								addCoupling(userAM.getName(),"followers","User_"+usr.getUserID(),"timeline");
 							}
+							for(User usr: user.getFollowing()){
+								//addOutport(userAM.getName(),"follower_" + usr.getUserID());
+								addCoupling("User_"+usr.getUserID(),"followers",userAM.getName(),"timeline");
+							}
+							//addCoupling(userAM.getName(),"followers",parent.tr.getName(),"lists");
 							//System.out.println(user.getUserID()+" USERS GENERATED!!");
 						}
 					}
@@ -243,6 +257,12 @@ public class TweetCreator extends ViewableAtomic{
 					}
 
 					if(users_model){
+						boolean flag = true;
+						for(UserAM usrAM: userList){
+							if(!usrAM.getAware())
+								flag = false;
+						}
+						allUsersAware = flag;
 						tmp_sigma = sigma;
 						holdIn(STATE_SEND_CMDS, 0);
 					} else

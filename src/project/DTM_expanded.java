@@ -30,7 +30,7 @@ public class DTM_expanded extends ViewableDigraph {
 
 		g = new RealisticTweetG();
 		tm = new TweetCreatorC();
-		tr = new DTransd();
+		tr = new DTransd("Transducer",10);
 		
 		g.setBackgroundColor(Color.cyan);
 		//tm.setBackgroundColor(Color.pink);
@@ -47,12 +47,12 @@ public class DTM_expanded extends ViewableDigraph {
 
 		//code to start the experiment.
 		addInport("startExp");
-		addTestInput("startExp", new StartExperiment("users Experiment", 5, 2, 2.0, 1.5, "#a", 1000));
-		addTestInput("startExp", new StartExperiment("Small Experiment", 500, 150, 2.0, 1.5, "#a", 1000));
+		addTestInput("startExp", new StartExperiment("users Experiment", 5, 2, 2.0, 1.5, "#a", 1000, false));
+		addTestInput("startExp", new StartExperiment("Small Experiment", 500, 150, 2.0, 1.5, "#a", 1000, false));
 		// addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 130, 2.0, 1.5, "#a", 1000));
-		addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 150, 2.0, 1.5, "#a", 10080));
+		addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 150, 2.0, 1.5, "#a", 10080, false));
 		// addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 130, 120.0, 15.5, "#a", 1000));
-		addTestInput("startExp", new StartExperiment("Large, Many Tweets Experiment", 10000, 150, 20.0, 15.0, "#a", 1000));
+		addTestInput("startExp", new StartExperiment("Large, Many Tweets Experiment", 10000, 150, 20.0, 15.0, "#a", 1000, false));
 		addCoupling(this, "startExp", g, RealisticTweetG.IN_START);
 
 		//add some test extreme topics

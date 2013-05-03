@@ -32,7 +32,7 @@ public class DTM extends ViewableDigraph {
 
 		g = new RealisticTweetG();
 		tm = new TweetCreator();
-		tr = new DTransd();
+		tr = new DTransd("Transducer",10);
 		
 		g.setBackgroundColor(Color.cyan);
 		tm.setBackgroundColor(Color.pink);
@@ -49,15 +49,15 @@ public class DTM extends ViewableDigraph {
 
 		//code to start the experiment.
 		addInport("startExp");
-		addTestInput("startExp", new StartExperiment("Small Experiment", 500, 150, 2.0, 1.5, "#a", 1000));
+		addTestInput("startExp", new StartExperiment("Small Experiment", 500, 150, 2.0, 1.5, "#a", 1000, false));
 		// addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 130, 2.0, 1.5, "#a", 1000));
-		addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 150, 2.0, 1.5, "#a", 10080));
+		addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 150, 2.0, 1.5, "#a", 10080, false));
 		// addTestInput("startExp", new StartExperiment("Large Experiment", 10000, 130, 120.0, 15.5, "#a", 1000));
-		addTestInput("startExp", new StartExperiment("Large, Many Tweets Experiment", 10000, 150, 20.0, 15.0, "#a", 1000));
+		addTestInput("startExp", new StartExperiment("Large, Many Tweets Experiment", 10000, 150, 20.0, 15.0, "#a", 1000, false));
 		addCoupling(this, "startExp", g, RealisticTweetG.IN_START);
 
 		// test Input for small number of users
-		addTestInput("startExp", new StartExperiment("users Experiment", 5, 2, 2.0, 1.5, "#a", 1000));
+		addTestInput("startExp", new StartExperiment("users Experiment", 5, 2, 2.0, 1.5, "#a", 1000, true));
 		
 		
 		//add some test extreme topics
@@ -112,7 +112,7 @@ public class DTM extends ViewableDigraph {
 		List<UserAM> userAMs = new ArrayList<UserAM>();
 		
 		for(User user: users){
-			UserAM userAM = new UserAM("U"+user.getUserID(), user.getUserID());
+			UserAM userAM = new UserAM("U"+user.getUserID(), user.getUserID(), null);
 			userList.add(userAM);
 			add(userAM);
 			System.out.println(user.getUserID()+" USERS GENERATED!!");
@@ -130,13 +130,14 @@ public class DTM extends ViewableDigraph {
     public void layoutForSimView()
     {
         preferredSize = new Dimension(1039, 570);
-        ((ViewableComponent)withName("DTransd")).setPreferredLocation(new Point(579, 187));
-        ((ViewableComponent)withName("User_1")).setPreferredLocation(new Point(71, 349));
-        ((ViewableComponent)withName("Real Tweet Gen")).setPreferredLocation(new Point(256, 97));
-        ((ViewableComponent)withName("User_2")).setPreferredLocation(new Point(77, 433));
-        ((ViewableComponent)withName("User_0")).setPreferredLocation(new Point(46, 165));
-        ((ViewableComponent)withName("TweetCreator")).setPreferredLocation(new Point(316, 45));
-        ((ViewableComponent)withName("User_3")).setPreferredLocation(new Point(358, 444));
+        ((ViewableComponent)withName("Transducer")).setPreferredLocation(new Point(50, 50));
+        ((ViewableComponent)withName("TweetCreator")).setPreferredLocation(new Point(250, 55));
+        ((ViewableComponent)withName("P17")).setPreferredLocation(new Point(50, 50));
+        ((ViewableComponent)withName("User_3")).setPreferredLocation(new Point(50, 50));
+        ((ViewableComponent)withName("User_2")).setPreferredLocation(new Point(50, 50));
+        ((ViewableComponent)withName("User_1")).setPreferredLocation(new Point(50, 50));
+        ((ViewableComponent)withName("Real Tweet Gen")).setPreferredLocation(new Point(50, 50));
         ((ViewableComponent)withName("User_4")).setPreferredLocation(new Point(50, 50));
+        ((ViewableComponent)withName("User_0")).setPreferredLocation(new Point(50, 50));
     }
 }

@@ -7,11 +7,12 @@ public class StartExperiment extends entity{
   private int numUsers;
   private int numFriends;
   private long experimentLife;
+  private boolean extremeExp;
   private double avgTweetsPerTimeUnit;
   private double stdTweetsPerTimeUnit;
   private String hashtagToWatch;
 
-  public StartExperiment(String name, int numUsers, int numFriends, double avgTweetsPerTimeUnit, double stdTweetsPerTimeUnit, String hashtagToWatch, long experimentLife){
+  public StartExperiment(String name, int numUsers, int numFriends, double avgTweetsPerTimeUnit, double stdTweetsPerTimeUnit, String hashtagToWatch, long experimentLife, boolean extremeExp){
     super(name + ", " + experimentLife);
     this.numUsers = numUsers;
     this.numFriends = numFriends;
@@ -19,8 +20,17 @@ public class StartExperiment extends entity{
     this.stdTweetsPerTimeUnit = stdTweetsPerTimeUnit;
     this.hashtagToWatch = hashtagToWatch;
     this.experimentLife = experimentLife;
+    this.extremeExp = extremeExp;
   }
 
+  public boolean getExtremeExp(){
+	  return extremeExp;
+  }
+  
+  public void setExtremeExp(boolean extremeExp){
+	  this.extremeExp = extremeExp;
+  }
+  
   public long getExperimentLife(){
     return experimentLife;
   }

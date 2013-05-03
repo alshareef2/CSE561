@@ -22,10 +22,18 @@ import view.modeling.ViewableAtomic;
 public class DTransd extends ViewableAtomic{
 
 	double observation_time;
+	// States
 	public static final String PASSIVE = "passive";
 	public static final String OBSERVE = "observing";
 	public static final String SEND = "sending";
 	public static final String SEND2 = "sendJobAndStats";
+	
+	// Ports
+	public static final String LISTS_P = "lists";
+	public static final String SOLVED_P = "solved";
+	public static final String GET_EXP_P = "getExperiment";
+	public static final String STAT_P = "stat";
+	
 	HashtagTweetLists ht;
 	StatisticsEntity stat = new StatisticsEntity();
 	int sendTo, num_of_proc = 0 , max_proc = DTM.PROCS;
@@ -33,25 +41,16 @@ public class DTransd extends ViewableAtomic{
 	int twitter_time;
 	Queue<HashtagTweetLists> waiting_lists = new LinkedList<HashtagTweetLists>();
 	boolean first_write ;
-	String watchHashtag ;
+	public static String watchHashtag ;
 	private Set<Integer> watchedSet = new HashSet<Integer>();
-
-	public DTransd(){
-		super("DTransd");
-		observation_time = 10;
-		addInport("lists");
-		addInport("solved");
-		addInport("getExperiment");
-		addOutport("stat");
-	}
 
 	public DTransd(String name, double ot){
 		super(name);
 		observation_time = ot;
-		addInport("lists");
-		addInport("solved");
-		addInport("getExperiment");
-		addOutport("stat");
+		addInport(LISTS_P);
+		addInport(SOLVED_P);
+		addInport(GET_EXP_P);
+		addOutport(STAT_P);
 	}
 
 	public void initialize(){
@@ -85,8 +84,8 @@ public class DTransd extends ViewableAtomic{
 					}
 				}
 				//observation time can be calculated based on the input data e.g: number of hashtags
-			} else if(messageOnPort(x,"solved",i)){
-				stat = (StatisticsEntity) x.getValOnPort("solved", i);
+			} else if(messageOnPort(x,SOLVED_P,i)){
+				stat = (StatisticsEntity) x.getValOnPort(SOLVED_P, i);
 				if(waiting_lists.isEmpty()){
 					removeProcessor(stat.getProcessedBy());
 					holdIn(OBSERVE, 0);
@@ -99,8 +98,8 @@ public class DTransd extends ViewableAtomic{
 					holdIn(SEND2, 0);
 				}
 
-			} else if(messageOnPort(x,"getExperiment",i)){
-				StartExperiment exp = (StartExperiment) x.getValOnPort("getExperiment", i);
+			} else if(messageOnPort(x,GET_EXP_P,i)){
+				StartExperiment exp = (StartExperiment) x.getValOnPort(GET_EXP_P, i);
 				watchHashtag = exp.getHashtagToWatch();
 			}
 		}
@@ -160,14 +159,14 @@ public class DTransd extends ViewableAtomic{
 			showState();
 			writeToWatchedFile();
 			writeToFile(stat);
-			m.add(makeContent("stat", stat));
+			m.add(makeContent(STAT_P, stat));
 		} else if(phaseIs(SEND)){
 			m.add(makeContent("send_lists_P"+proc_counter, ht));
 		} else if(phaseIs(SEND2)){
 			showState();
 			writeToWatchedFile();
 			writeToFile(stat);
-			m.add(makeContent("stat", stat));
+			m.add(makeContent(STAT_P, stat));
 			m.add(makeContent("send_lists_P" + sendTo, ht));
 		}
 		return m;
@@ -176,7 +175,6 @@ public class DTransd extends ViewableAtomic{
 	public void writeToFile(StatisticsEntity stat) {
 
 		try {
-			System.out.println("WRITING TO THE FILE!");
 			double fracWatched = stat.getwatchedPerc();
 
 			String content = (twitter_time-10) + "\t" + stat.getEntropy() +"\t" + stat.getHashtags().size() + "\t"+ stat.getNumOfusers() + 
@@ -199,7 +197,7 @@ public class DTransd extends ViewableAtomic{
 			if(first_write){
 				bw.append("Time\tEntropy\tNum. Hashtags\tNum. Users\tHHI\tFrac. Watched\n");
 			}
-			bw.append(content);//.write(content);
+			bw.append(content);
 			bw.close();
 
 
@@ -213,15 +211,14 @@ public class DTransd extends ViewableAtomic{
 	}
 
 	private void addProcessor(double duration){
-		DTM_expanded parent = (DTM_expanded) getParent();
-		//	 exLog.append(parent.getSimulator().getTL()+","+"client"+parent.subCount+","+"created"+"\n");
+		DTM parent = (DTM) getParent();
 		proc_counter ++;
 		num_of_proc ++;
 		Processor proc = parent.addProcessor(proc_counter, duration);
 		addModel(proc);
 
 		// between transd and proc
-		addCoupling(proc.getName(),"stat",parent.tr.getName(),"solved");
+		addCoupling(proc.getName(),STAT_P,parent.tr.getName(),SOLVED_P);
 		addOutport(parent.tr.getName(),"send_lists_" + proc.getName());
 		addCoupling(parent.tr.getName(),"send_lists_" + proc.getName(),proc.getName(),"lists");
 		
@@ -246,10 +243,10 @@ public class DTransd extends ViewableAtomic{
 	}
 
 	private void removeProcessor(String procName){
-		DTM_expanded parent = (DTM_expanded) getParent();
+		DTM parent = (DTM) getParent();
 
 		removeCoupling(parent.tr.getName(),"send_lists_"+procName,procName,"lists");
-		removeCoupling(procName,"stat",parent.tr.getName(),"solved");
+		removeCoupling(procName,STAT_P,parent.tr.getName(),SOLVED_P);
 		removeOutport(parent.tr.getName(),"send_lists_"+procName);
 
 		removeModel(procName);

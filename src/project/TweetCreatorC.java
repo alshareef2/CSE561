@@ -75,7 +75,7 @@ public class TweetCreatorC extends ViewableDigraph {
 	public void addUsers(List<User> users){
 
 		for(User user: users){
-			UserAM userAM = new UserAM("U_"+user.getUserID(),user.getUserID());
+			UserAM userAM = new UserAM("U_"+user.getUserID(),user.getUserID(), null);
 			userList.add(userAM);
 			add(userAM);
 			System.out.println(user.getUserID()+" USERS GENERATED!!");
